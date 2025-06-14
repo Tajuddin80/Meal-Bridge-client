@@ -4,10 +4,15 @@ import SignleFood from "./SignleFood";
 
 const AvailableFood = () => {
   const [allFoods, setAllFoods] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
+    setLoading(true);
     axios
       .get("http://localhost:3000/allfoods")
-      .then((res) => setAllFoods(res.data))
+      .then((res) => {
+        setAllFoods(res.data);
+        setLoading(false);
+      })
       .catch((err) => console.log(err));
   }, []);
   //   console.log(allFoods);
@@ -59,9 +64,15 @@ const AvailableFood = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredFoods.map((food) => (
-            <SignleFood key={food._id} food={food} />
-          ))}
+          {loading ? (
+            <div className="fixed inset-0 flex justify-center items-center bg-base-100/50 z-50">
+              <span className="loading loading-spinner loading-lg"></span>
+            </div>
+          ) : (
+            filteredFoods.map((food) => (
+              <SignleFood key={food._id} food={food} />
+            ))
+          )}
         </tbody>
       </table>
     </div>

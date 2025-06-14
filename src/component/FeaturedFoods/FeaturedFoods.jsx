@@ -1,7 +1,7 @@
 
 import FoodCard from "./FoodCard";
 
-const FeaturedFoods = ({ featuredFood }) => {
+const FeaturedFoods = ({ featuredFood ,loading}) => {
 
 
   return (
@@ -13,7 +13,7 @@ const FeaturedFoods = ({ featuredFood }) => {
       <div className="grid gap-8 w-[95vw] mx-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 
         {
-          featuredFood.map(food => <FoodCard key={food._id} food={food}></FoodCard>)
+          featuredFood.map(food => <FoodCard loading={loading} key={food._id} food={food}></FoodCard>)
         }
       </div>
     </div>

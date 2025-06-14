@@ -20,7 +20,7 @@ const About = () => {
               cursorStyle="_"
               typeSpeed={100}
               deleteSpeed={100}
-              delaySpeed={100}
+              delaySpeed={1000}
             />
           </h1>
           <p className="text-base-content text-lg leading-relaxed mb-3">
