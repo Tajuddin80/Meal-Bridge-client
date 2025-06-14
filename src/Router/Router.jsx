@@ -1,5 +1,3 @@
-
-
 import { createBrowserRouter } from "react-router";
 import HomeLayout from "../AllLayouts/HomeLayout/Homelayout";
 import Error404 from "../pages/Error404/Error404";
@@ -7,13 +5,14 @@ import Home from "../pages/Home/Home";
 import Signin from "../pages/Signin/Signin";
 import Signup from "../pages/Signup/Signup";
 import PrivateRoute from "../component/PrivateRoute";
-
+import AvailableFood from "../pages/AvailableFood/AvailableFood";
+import About from "../pages/About/About";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element:  <HomeLayout></HomeLayout>,
-    errorElement: <Error404 />, 
+    element: <HomeLayout></HomeLayout>,
+    errorElement: <Error404 />,
     children: [
       {
         index: true,
@@ -22,7 +21,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "signin",
-        element: <Signin></Signin> ,
+        element: <Signin></Signin>,
         errorElement: <Error404 />,
       },
       {
@@ -30,18 +29,23 @@ export const router = createBrowserRouter([
         element: <Signup></Signup>,
         errorElement: <Error404 />,
       },
-      
       {
-        path: "",
-        
-        element: (
-          <PrivateRoute>
-          
-          </PrivateRoute>
-        ),
+        path: "aboutUs",
+        element:<About></About>,
         errorElement: <Error404 />,
       },
-      
+      {
+        path: "/availableFoods",
+        element: <AvailableFood></AvailableFood>,
+        errorElement: <Error404 />,
+      },
+
+      {
+        path: "",
+
+        element: <PrivateRoute></PrivateRoute>,
+        errorElement: <Error404 />,
+      },
     ],
   },
   {

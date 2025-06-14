@@ -100,8 +100,8 @@ const Navbar = () => {
             {links}
           </ul>
         </div>
-        <div className="hidden md:flex items-center text-3xl font-semibold md:text-4xl">
-          Meal <IoFastFoodOutline className="ml-1" /> Bridge
+        <div className=" md:flex items-center text-3xl font-semibold md:text-4xl">
+          <span className="hidden md:flex">Meal <IoFastFoodOutline className="px-1" /> Bridge</span>  
         </div>
       </div>
 

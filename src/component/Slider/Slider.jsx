@@ -39,7 +39,7 @@ function Slider() {
   return (
 <>
   <div className="bg-base-100 text-base-content mt-10 md:mt-15 lg:mt-20">
-    <div className="w-[95vw] mx-auto h-auto md:h-[520px] lg:h-[calc(100vh-60px)] md:px-6 lg:px-0">
+    <div className="w-[95vw] mx-auto h-auto md:h-[520px] md:px-6 lg:px-0">
       <Swiper
         ref={swiperRef}
         modules={[Autoplay]}
@@ -56,7 +56,7 @@ function Slider() {
                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-tight">
                   {slide.title}
                 </h2>
-                <p className="text-sm sm:text-base md:text-lg mt-3 sm:mt-4 md:mt-5">
+                <p className="text-md sm:text-base md:text-lg mt-3 sm:mt-4 md:mt-5">
                   {slide.description}
                 </p>
                 <p className="font-semibold text-base sm:text-lg md:text-xl mt-2">
