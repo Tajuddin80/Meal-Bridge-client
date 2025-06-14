@@ -11,9 +11,12 @@ const FoodCard = ({ food, loading }) => {
         </div>
       ) : (
         <motion.div
-          whileHover={{ scale: 1.05 }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="card bg-base-200 shadow-lg rounded-xl"
+          className="card bg-base-100 shadow-xl rounded-xl border border-base-300 hover:shadow-2xl transition-shadow"
         >
           <figure className="px-10 pt-10">
             <img
@@ -24,14 +27,24 @@ const FoodCard = ({ food, loading }) => {
           </figure>
           <div className="card-body items-center text-center">
             <h2 className="card-title text-2xl font-bold">{food.foodName}</h2>
-            <p className="text-lg text-gray-600">Category: {food.category}</p>
-            <p className="text-sm">Quantity: {food.foodQuantity}</p>
-            <p className="text-sm">Pickup: {food.pickupLocation}</p>
-            <p className="text-sm text-red-500">Expires: {food.expiredDate}</p>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              Category: {food.category}
+            </p>
+            <p className="text-sm dark:text-gray-400">
+              Quantity: {food.foodQuantity}
+            </p>
+            <p className="text-sm dark:text-gray-400">
+              Pickup: {food.pickupLocation}
+            </p>
+            <p className="text-sm text-red-500">
+              Expires: {food.expiredDate}
+            </p>
 
             <div className="w-full mt-4">
               <Link to={`/food/${food._id}`} className="w-full">
-                <button className="btn btn-primary w-full">View Details</button>
+                <button className="btn btn-primary w-full">
+                  View Details
+                </button>
               </Link>
             </div>
           </div>
@@ -40,4 +53,5 @@ const FoodCard = ({ food, loading }) => {
     </>
   );
 };
+
 export default FoodCard;

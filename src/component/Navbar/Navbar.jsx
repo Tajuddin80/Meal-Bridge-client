@@ -74,7 +74,8 @@ const Navbar = () => {
     </>
   );
 
-  return (<div className="navbar bg-base-100 shadow-md sticky top-0 z-50 w-full max-w-full overflow-x-hidden px-4 md:px-10 lg:px-16">
+  return (
+    <div className="navbar bg-base-100 z-50 sticky top-0 shadow-md  w-full max-w-full  px-4 md:px-10 lg:px-16">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -101,7 +102,9 @@ const Navbar = () => {
           </ul>
         </div>
         <div className=" md:flex items-center text-3xl font-semibold md:text-4xl">
-          <span className="hidden md:flex">Meal <IoFastFoodOutline className="px-1" /> Bridge</span>  
+          <span className="hidden md:flex">
+            Meal <IoFastFoodOutline className="px-1" /> Bridge
+          </span>
         </div>
       </div>
 
@@ -134,23 +137,19 @@ const Navbar = () => {
 
         {user ? (
           <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-              data-tooltip-id="userTooltip"
-              data-tooltip-content={user.username || user.email || "User"}
-            >
+            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <img
-                  src={user.photoURL}
-                  alt={user.username || "User profile"}
+                  src={user?.photoURL}
+                  alt={user?.username || "User profile"}
                 />
               </div>
-            </div>
-            <Tooltip id="userTooltip" place="bottom" effect="solid" />
-            <ul className="menu menu-sm dropdown-content mt-3 z-10 p-2 shadow bg-base-100 rounded-box w-52">
-              <li className="text-lg">
+            </label>
+            <ul
+              tabIndex={0}
+              className="mt-3 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52 z-50"
+            >
+              <li>
                 <Link
                   onClick={handleLogout}
                   to="/signin"
