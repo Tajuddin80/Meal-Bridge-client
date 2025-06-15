@@ -22,29 +22,30 @@ const FoodCard = ({ food, loading }) => {
             <img
               src={food.foodImage}
               alt={food.foodName}
-              className="rounded-xl"
+              className="rounded-xl object-cover max-h-48"
             />
           </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title text-2xl font-bold">{food.foodName}</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              Category: {food.category}
+          <div className="card-body items-center text-center text-base-content">
+            <h2 className="card-title text-2xl font-extrabold">
+              {food.foodName}
+            </h2>
+            <p className="text-base font-semibold">
+              Category:{" "}
+              <span className="font-normal">{food.category}</span>
             </p>
-            <p className="text-sm dark:text-gray-400">
-              Quantity: {food.foodQuantity}
+            <p className="text-sm font-medium">
+              Quantity: <span className="font-normal">{food.foodQuantity}</span>
             </p>
-            <p className="text-sm dark:text-gray-400">
-              Pickup: {food.pickupLocation}
+            <p className="text-sm font-medium">
+              Pickup: <span className="font-normal">{food.pickupLocation}</span>
             </p>
-            <p className="text-sm text-red-500">
-              Expires: {food.expiredDate}
+            <p className="text-sm font-semibold text-error">
+              Expires: <span className="font-normal">{food.expiredDate}</span>
             </p>
 
             <div className="w-full mt-4">
               <Link to={`/allfoods/${food._id}`} className="w-full">
-                <button className="btn btn-primary w-full">
-                  View Details
-                </button>
+                <button className="btn btn-primary w-full">View Details</button>
               </Link>
             </div>
           </div>

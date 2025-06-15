@@ -3,8 +3,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import { motion } from "framer-motion"
 import "swiper/css/navigation";
 import { Link, Outlet } from "react-router";
+
+
 
 function Slider() {
   const swiperRef = useRef(null);
@@ -37,57 +40,89 @@ function Slider() {
   ];
 
   return (
-<>
-  <div className="bg-base-100 text-base-content mt-10 md:mt-15 lg:mt-20">
-    <div className="w-[95vw] mx-auto h-auto md:h-[520px] md:px-6 lg:px-0">
-      <Swiper
-        ref={swiperRef}
-        modules={[Autoplay]}
-        loop={true}
-        autoplay={{ delay: 2500, disableOnInteraction: false }}
-        className="mySwiper w-full"
-      >
-        {slides.map((slide, index) => (
-          <SwiperSlide key={index}>
-            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 md:gap-6 p-4 md:p-6 lg:p-8 h-full overflow-hidden">
-              
-              {/* Text Part */}
-              <div className="text-center md:text-left">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-tight">
-                  {slide.title}
-                </h2>
-                <p className="text-md sm:text-base md:text-lg mt-3 sm:mt-4 md:mt-5">
-                  {slide.description}
-                </p>
-                <p className="font-semibold text-base sm:text-lg md:text-xl mt-2">
-                  {slide.date}
-                </p>
-                <Link to="/" className="btn btn-primary mt-3 sm:mt-4">
-                  Join Now
-                </Link>
-              </div>
+  <>
+      <div className="bg-gradient-to-r from-base-200 via-base-100 to-base-300 text-base-content rounded-lg ">
+        <div className="w-[95vw] mx-auto h-auto md:h-[600px] lg:h-[650px] flex items-center md:px-6 lg:px-0">
+          <Swiper
+            ref={swiperRef}
+            modules={[Autoplay]}
+            loop={true}
+            autoplay={{ delay: 2500, disableOnInteraction: false }}
+            className="mySwiper w-full"
+          >
+            {slides.map((slide, index) => (
+              <SwiperSlide key={index}>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 md:gap-6 p-4 md:p-6 lg:p-8 h-full overflow-hidden rounded-xl shadow-lg bg-base-100 bg-opacity-80 backdrop-blur-sm"
+                >
+                  {/* Image Part */}
+                  <motion.div
+                    initial={{ scale: 0.85, opacity: 0, rotate: -5 }}
+                    animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="w-full flex justify-center md:justify-end order-1 md:order-2"
+                  >
+                    <motion.img
+                      loading="lazy"
+                      src={slide.image}
+                      alt={slide.title}
+                      className="w-full max-w-[300px] sm:max-w-[350px] md:max-w-[450px] lg:max-w-[500px] h-auto object-contain rounded-lg shadow-md"
+                      animate={{ y: [0, -10, 0] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 3,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  </motion.div>
 
-              {/* Image Part */}
-              <div className="w-full flex justify-center md:justify-end">
-                <img
-                  loading="lazy"
-                  className="w-full max-w-[300px] sm:max-w-[350px] md:max-w-[450px] lg:max-w-[500px] h-auto object-cover rounded-lg shadow-lg"
-                  alt={slide.title}
-                  src={slide.image}
-                />
-              </div>
+                  {/* Text Part */}
+                  <motion.div
+                    initial={{ x: -50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="text-center md:text-left order-2 md:order-1"
+                  >
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-content">
+                      {slide.title}
+                    </h2>
+                    <p className="text-sm sm:text-base md:text-lg mt-3 sm:mt-4 md:mt-5 text-base-content/80">
+                      {slide.description}
+                    </p>
+                    <p className="font-semibold text-sm sm:text-lg md:text-xl mt-2 text-base-content">
+                      {slide.date}
+                    </p>
+                    <motion.div
+                      animate={{ y: [0, -5, 0] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1.5,
+                        ease: "easeInOut",
+                      }}
+                      className="inline-block"
+                    >
+                      <Link to="/" className="btn btn-primary mt-3 sm:mt-4">
+                        Join Now
+                      </Link>
+                    </motion.div>
+                  </motion.div>
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </div>
 
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
-  </div>
+      <div className="w-[90%] mx-auto mt-6">
+        <Outlet />
+      </div>
+    </>
 
-  <div className="w-[90%] mx-auto mt-6">
-    <Outlet />
-  </div>
-</>
+
+
 
 
 
