@@ -9,6 +9,8 @@ import AvailableFood from "../pages/AvailableFood/AvailableFood";
 import About from "../pages/About/About";
 import AddFood from "../pages/AddFood/AddFood";
 import ManageMyFoods from "../pages/ManageMyFood/ManageMyFoods";
+import axios from "axios";
+import FoodDetails from "../pages/FoodDetails/FoodDetails";
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +35,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "aboutUs",
-        element:<About></About>,
+        element: <About></About>,
         errorElement: <Error404 />,
       },
       {
@@ -44,12 +46,29 @@ export const router = createBrowserRouter([
 
       {
         path: "/addFood",
-        element: <PrivateRoute><AddFood></AddFood></PrivateRoute>,
+        element: (
+          <PrivateRoute>
+            <AddFood></AddFood>
+          </PrivateRoute>
+        ),
         errorElement: <Error404 />,
       },
       {
         path: "/manageMyFoods",
-        element: <PrivateRoute><ManageMyFoods></ManageMyFoods></PrivateRoute>,
+        element: (
+          <PrivateRoute>
+            <ManageMyFoods></ManageMyFoods>
+          </PrivateRoute>
+        ),
+        errorElement: <Error404 />,
+      },
+      {
+        path: "/allFoods/:id",
+        element: (
+          <PrivateRoute>
+            <FoodDetails></FoodDetails>
+          </PrivateRoute>
+        ),
         errorElement: <Error404 />,
       },
     ],

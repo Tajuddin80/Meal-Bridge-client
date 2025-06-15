@@ -41,7 +41,7 @@ const FoodCard = ({ food, loading }) => {
             </p>
 
             <div className="w-full mt-4">
-              <Link to={`/food/${food._id}`} className="w-full">
+              <Link to={`/allfoods/${food._id}`} className="w-full">
                 <button className="btn btn-primary w-full">
                   View Details
                 </button>

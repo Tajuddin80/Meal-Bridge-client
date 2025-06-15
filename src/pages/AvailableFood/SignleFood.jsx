@@ -19,7 +19,7 @@ const SignleFood = ({food}) => {
       <td className="py-2 px-4">{expiredDate}</td>
       <td className="py-2 px-4">{pickupLocation}</td>
       <td className="py-2 px-4">
-        <Link to={`/foodDetails/${_id}`} className="text-info hover:underline">
+        <Link to={`/allFoods/${_id}`} className="text-info hover:underline">
           View Details
         </Link>
       </td>

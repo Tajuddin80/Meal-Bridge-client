@@ -1,12 +1,14 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink, Link } from "react-router";
 import { Tooltip } from "react-tooltip";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import { IoFastFoodOutline } from "react-icons/io5";
 
 const Navbar = () => {
-  const { user, handleLogout } = use(AuthContext);
+  const { user, handleLogout } = useContext(AuthContext);
   const [theme, setTheme] = useState("light");
+
+  console.log(user?.photoURL); // Safe access
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "light";
@@ -57,7 +59,7 @@ const Navbar = () => {
       </li>
       <li className="text-lg whitespace-nowrap">
         <NavLink
-          to={`/myFoodRequest/${user?.email}`}
+          to={`/myFoodRequest/${user?.email || ""}`}
           className={({ isActive }) => (isActive ? "underline font-bold" : "")}
         >
           My Food Request
@@ -75,7 +77,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="navbar bg-base-100 z-50 sticky top-0 shadow-md  w-full max-w-full  px-4 md:px-10 lg:px-16">
+    <div className="navbar bg-base-100 z-50 sticky top-0 shadow-md w-full max-w-full px-4 md:px-10 lg:px-16">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -101,7 +103,7 @@ const Navbar = () => {
             {links}
           </ul>
         </div>
-        <div className=" md:flex items-center text-3xl font-semibold md:text-4xl">
+        <div className="md:flex items-center text-3xl font-semibold md:text-4xl">
           <span className="hidden md:flex">
             Meal <IoFastFoodOutline className="px-1" /> Bridge
           </span>
@@ -148,7 +150,7 @@ const Navbar = () => {
               >
                 <div className="w-10 rounded-full">
                   <img
-                    src={user?.photoURL}
+                    src={user?.photoURL || "/default-avatar.png"}
                     alt={user?.displayName || user?.email || "User profile"}
                   />
                 </div>

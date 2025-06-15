@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
+import axios from "axios"
 
 const AddFood = () => {
   const { user } = useContext(AuthContext);
@@ -44,29 +45,22 @@ const AddFood = () => {
       },
     };
     console.log(fullData);
-
-    //   fetch("https://plant-book-server.vercel.app/addfood", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(fullData),
-    //   })
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //       if (data.insertedId) {
-    //         Swal.fire({
-    //           position: "center",
-    //           icon: "success",
-    //           title: "Food item added!",
-    //           showConfirmButton: false,
-    //           timer: 1500,
-    //         });
-    //         form.reset();
-    //         navigate(`/myfoods/${formData.donorEmail}`);
-    //       }
-    //     })
-    //     .catch((err) => console.error("Submission error:", err));
+    axios
+      .post("http://localhost:3000/addFood", fullData)
+      .then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Food item added!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          form.reset();
+          navigate(`/myfoods/${formData.donorEmail}`);
+        }
+      })
+      .catch((err) => console.error("Submission error:", err));
   };
 
   return (
