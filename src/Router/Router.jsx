@@ -7,6 +7,7 @@ import Signup from "../pages/Signup/Signup";
 import PrivateRoute from "../component/PrivateRoute";
 import AvailableFood from "../pages/AvailableFood/AvailableFood";
 import About from "../pages/About/About";
+import AddFood from "../pages/AddFood/AddFood";
 
 export const router = createBrowserRouter([
   {
@@ -41,9 +42,8 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "",
-
-        element: <PrivateRoute></PrivateRoute>,
+        path: "/addFood",
+        element: <PrivateRoute><AddFood></AddFood></PrivateRoute>,
         errorElement: <Error404 />,
       },
     ],
