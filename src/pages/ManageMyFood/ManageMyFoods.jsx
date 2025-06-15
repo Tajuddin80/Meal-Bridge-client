@@ -1,10 +1,11 @@
 import React, { use, useEffect, useState } from "react";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
-// import { myAddedFoodsPromies } from "../../api/foodsApi";
-import MyAddedSignleFood from "../../component/MyAddedSignleFood/MyAddedSignleFood";
 import { fetchFoods } from "../../api/fetchFoods";
+import MyAddedSignleFood from "./MyAddedSignleFood";
+import Swal from "sweetalert2";
 
 const ManageMyFoods = () => {
+  // const [myAddedFoods, setMyAddedFoods] = useState([])
   const { user } = use(AuthContext);
   const email = user?.email;
 
@@ -27,6 +28,52 @@ useEffect(() => {
 
   fetchMyFoods();
 }, [email]);
+
+
+const handleDelete = (id) => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`http://localhost:3000/allfoods/${id}`, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.deletedCount > 0) {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Your tip has been deleted",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          
+            setFoods((prevFoods) => prevFoods.filter((food) => food._id !== id));
+          }
+        })
+        .catch((error) => {
+          console.error("Delete error:", error);
+
+          Swal.fire({
+            position: "center",
+            icon: "error", // small typo, use lowercase "error"
+            title: "Something went wrong while deleting.",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        });
+    }
+  });
+};
+
+
 
   return (
     <div>
@@ -53,7 +100,7 @@ useEffect(() => {
           <tbody>
             {foods.length > 0 ? (
               foods.map((food) => (
-                <MyAddedSignleFood key={food._id} food={food} />
+                <MyAddedSignleFood handleDelete={handleDelete} key={food._id} food={food} />
               ))
             ) : (
            <tr>

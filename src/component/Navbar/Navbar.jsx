@@ -8,7 +8,6 @@ const Navbar = () => {
   const { user, handleLogout } = useContext(AuthContext);
   const [theme, setTheme] = useState("light");
 
-  console.log(user?.photoURL); // Safe access
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "light";
@@ -17,7 +16,7 @@ const Navbar = () => {
   }, []);
 
   const toggleTheme = (e) => {
-    const newTheme = e.target.checked ? "forest" : "light";
+    const newTheme = e.target.checked ? "abyss" : "light";
     setTheme(newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
@@ -119,7 +118,7 @@ const Navbar = () => {
           <input
             type="checkbox"
             onChange={toggleTheme}
-            checked={theme === "forest"}
+            checked={theme === "abyss"}
           />
           <svg
             className="swap-off h-7 w-7 fill-current"

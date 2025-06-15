@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-const MyAddedSignleFood = ({ food, onDelete }) => {
+const MyAddedSignleFood = ({ food, handleDelete }) => {
   const {
     _id,
     foodName,
@@ -40,8 +40,8 @@ const MyAddedSignleFood = ({ food, onDelete }) => {
 
       <td className="py-2 px-4">
         <button
-          onClick={() => onDelete(_id)}
-          className="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-red-100 text-red-700 hover:bg-red-200 transition"
+          onClick={() => handleDelete(_id)}
+          className="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-red-100 text-red-700 hover:bg-red-200 transition cursor-pointer"
           title="Delete"
         >
           <FaTrash className="text-lg" />

@@ -11,6 +11,7 @@ import AddFood from "../pages/AddFood/AddFood";
 import ManageMyFoods from "../pages/ManageMyFood/ManageMyFoods";
 import axios from "axios";
 import FoodDetails from "../pages/FoodDetails/FoodDetails";
+import UpdateFood from "../pages/UpdateFood/UpdateFood";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +46,18 @@ export const router = createBrowserRouter([
       },
 
       {
+        path: "/updateFood/:id",
+
+        element: (
+          <PrivateRoute>
+            <UpdateFood></UpdateFood>
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:3000/allfoods/${params.id}`),
+        errorElement: <Error404 />,
+      },
+      {
         path: "/addFood",
         element: (
           <PrivateRoute>
@@ -53,6 +66,7 @@ export const router = createBrowserRouter([
         ),
         errorElement: <Error404 />,
       },
+
       {
         path: "/manageMyFoods",
         element: (
@@ -63,7 +77,7 @@ export const router = createBrowserRouter([
         errorElement: <Error404 />,
       },
       {
-        path: "/allFoods/:id",
+        path: "/allfoods/:id",
         element: (
           <PrivateRoute>
             <FoodDetails></FoodDetails>
