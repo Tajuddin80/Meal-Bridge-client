@@ -1,16 +1,17 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import { Link } from 'react-router';
 import Swal from 'sweetalert2';
+import { AuthContext } from '../../Firebase/AuthContext/AuthContext';
 
 const MyFoodRequestSingleCard = ({ food, onRemove }) => {
   const [status, setStatus] = useState(food.status || "requested");
   const [disabled, setDisabled] = useState(food.status === "Received");
+  const {user} =use(AuthContext)
 
   const handleChange = (e) => {
     const newStatus = e.target.value;
-
-    if (newStatus === "Received") {
+  if (newStatus === "Received") {
       Swal.fire({
         title: "Have you received the food?",
         text: "Once marked as received, you can't change it again.",
@@ -28,8 +29,16 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
           const foodId = food.requestedFood.id;
 
           Promise.all([
-            axios.get(`http://localhost:3000/allFoods/${foodId}`),
-            axios.get(`http://localhost:3000/requestedFood`)
+            axios.get(`http://localhost:3000/allFoods/${foodId}`, {
+              headers: {
+                authorization: `Bearer ${user.accessToken}`
+              }
+            }),
+            axios.get(`http://localhost:3000/requestedFood`, {
+              headers: {
+                authorization: `Bearer ${user.accessToken}`
+              }
+            })
           ])
             .then(([availableRes, requestedRes]) => {
               const availableFoodAmount = availableRes.data.foodQuantity;
@@ -53,9 +62,17 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
 
               axios.patch(`http://localhost:3000/updateFoodAmount/${foodId}`, {
                 foodQuantity: newFoodQuantity
+              }, {
+                headers: {
+                  authorization: `Bearer ${user.accessToken}`
+                }
               })
                 .then(() => {
-                  axios.delete(`http://localhost:3000/requestedFood/${food._id}`)
+                  axios.delete(`http://localhost:3000/requestedFood/${food._id}`, {
+                    headers: {
+                      authorization: `Bearer ${user.accessToken}`
+                    }
+                  })
                     .then(() => {
                       Swal.fire(
                         "Updated!",
@@ -66,14 +83,17 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
                     })
                     .catch(err => {
                       console.error("Error deleting request:", err);
+                      Swal.fire("Error", "Failed to delete request.", "error");
                     });
                 })
                 .catch(updateErr => {
                   console.error("Error updating food amount:", updateErr);
+                  Swal.fire("Error", "Failed to update food quantity.", "error");
                 });
             })
             .catch(err => {
               console.error("Error fetching data:", err);
+              Swal.fire("Error", "Failed to fetch data.", "error");
             });
 
         } else {
@@ -84,6 +104,7 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
       setStatus(newStatus);
     }
   };
+
 
   return (
    <tr className="hover:bg-base-200 transition-colors">
