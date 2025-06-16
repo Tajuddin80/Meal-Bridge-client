@@ -1,18 +1,19 @@
-import axios from 'axios';
-import React, { use, useState } from 'react';
-import { Link } from 'react-router';
-import Swal from 'sweetalert2';
-import { AuthContext } from '../../Firebase/AuthContext/AuthContext';
+import axios from "axios";
+import React, { use, useState } from "react";
+import { Link } from "react-router";
+import Swal from "sweetalert2";
+import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 
 const MyFoodRequestSingleCard = ({ food, onRemove }) => {
   const [status, setStatus] = useState(food.status || "requested");
   const [disabled, setDisabled] = useState(food.status === "Received");
-  const {user} =use(AuthContext)
+  const { user } = use(AuthContext);
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const newStatus = e.target.value;
-  if (newStatus === "Received") {
-      Swal.fire({
+
+    if (newStatus === "Received") {
+      const confirmed = await Swal.fire({
         title: "Have you received the food?",
         text: "Once marked as received, you can't change it again.",
         icon: "warning",
@@ -21,122 +22,106 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, I received it",
         cancelButtonText: "No, cancel",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          setStatus("Received");
-          setDisabled(true);
-
-          const foodId = food.requestedFood.id;
-
-          Promise.all([
-            axios.get(`http://localhost:3000/allFoods/${foodId}`, {
-              headers: {
-                authorization: `Bearer ${user.accessToken}`
-              }
-            }),
-            axios.get(`http://localhost:3000/requestedFood`, {
-              headers: {
-                authorization: `Bearer ${user.accessToken}`
-              }
-            })
-          ])
-            .then(([availableRes, requestedRes]) => {
-              const availableFoodAmount = availableRes.data.foodQuantity;
-
-              const requestedFood = requestedRes.data.find(
-                item => item.requestedFood.id === foodId
-              );
-
-              if (!requestedFood) {
-                console.warn("Requested food not found for this food ID");
-                return;
-              }
-
-              const requestedFoodAmount = requestedFood.requestedQuantity;
-              const newFoodQuantity = availableFoodAmount - requestedFoodAmount;
-
-              if (newFoodQuantity < 0) {
-                console.warn("Not enough food to fulfill the request");
-                return;
-              }
-
-              axios.patch(`http://localhost:3000/updateFoodAmount/${foodId}`, {
-                foodQuantity: newFoodQuantity
-              }, {
-                headers: {
-                  authorization: `Bearer ${user.accessToken}`
-                }
-              })
-                .then(() => {
-                  axios.delete(`http://localhost:3000/requestedFood/${food._id}`, {
-                    headers: {
-                      authorization: `Bearer ${user.accessToken}`
-                    }
-                  })
-                    .then(() => {
-                      Swal.fire(
-                        "Updated!",
-                        "The status has been set to Received and request removed.",
-                        "success"
-                      );
-                      onRemove(food._id);
-                    })
-                    .catch(err => {
-                      console.error("Error deleting request:", err);
-                      Swal.fire("Error", "Failed to delete request.", "error");
-                    });
-                })
-                .catch(updateErr => {
-                  console.error("Error updating food amount:", updateErr);
-                  Swal.fire("Error", "Failed to update food quantity.", "error");
-                });
-            })
-            .catch(err => {
-              console.error("Error fetching data:", err);
-              Swal.fire("Error", "Failed to fetch data.", "error");
-            });
-
-        } else {
-          setStatus("requested");
-        }
       });
+
+      if (!confirmed.isConfirmed) {
+        setStatus("requested");
+        return;
+      }
+
+      try {
+        const token = await user.getIdToken();
+        const foodId = food.requestedFood.id;
+
+        // Fetch food data and current requests
+        const [foodRes, requestsRes] = await Promise.all([
+          axios.get(`http://localhost:3000/allFoods/${foodId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`http://localhost:3000/requestedFood`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        const availableFood = foodRes.data;
+        const requestedItem = requestsRes.data.find(
+          (item) => item._id === food._id
+        );
+
+        if (!availableFood || !requestedItem) {
+          Swal.fire("Error", "Requested food not found.", "error");
+          return;
+        }
+
+        const updatedQuantity =
+          availableFood.foodQuantity - requestedItem.requestedQuantity;
+
+        if (updatedQuantity < 0) {
+          Swal.fire("Oops", "Not enough food available", "warning");
+          return;
+        }
+
+        // Step 1: Update food quantity
+        await axios.patch(
+          `http://localhost:3000/updateFoodAmount/${foodId}`,
+          { foodQuantity: updatedQuantity },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        // Step 2: Delete the request
+        await axios.delete(
+          `http://localhost:3000/requestedFood/${food._id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        // Step 3: Update local state
+        setStatus("Received");
+        setDisabled(true);
+        onRemove(food._id);
+
+        Swal.fire("Success!", "Marked as received.", "success");
+      } catch (err) {
+        console.error("Error processing food receipt:", err);
+        Swal.fire("Error", "Something went wrong. Try again later.", "error");
+      }
     } else {
       setStatus(newStatus);
     }
   };
 
-
   return (
-   <tr className="hover:bg-base-200 transition-colors">
-  <td className="py-2 px-4 w-20 text-center">
-    <img
-      src={food.requestedFood.image}
-      alt={food.requestedFood.name}
-      className="h-12 w-12 object-cover rounded mx-auto"
-    />
-  </td>
-  <td className="py-2 px-4 text-left">{food.requestedFood.name}</td>
-  <td className="py-2 px-4 text-center">{food.requestedQuantity}</td>
-  <td className="py-2 px-4 text-center">{food.expiredDate}</td>
-  <td className="py-2 px-4 text-left">{food.pickupLocation}</td>
-  <td className="py-2 px-4 text-center">
-    <Link to={`/allFoods/${food.requestedFood.id}`} className="text-info hover:underline">
-      View Details
-    </Link>
-  </td>
-  <td className="py-2 px-4 w-36 text-center">
-    <select
-      className="select select-sm select-bordered w-full"
-      value={status}
-      disabled={disabled}
-      onChange={handleChange}
-    >
-      <option value="requested">requested</option>
-      <option value="Received">Received</option>
-    </select>
-  </td>
-</tr>
-
+    <tr className="hover:bg-base-200 transition-colors">
+      <td className="py-2 px-4 w-20 text-center">
+        <img
+          src={food.requestedFood.image}
+          alt={food.requestedFood.name}
+          className="h-12 w-12 object-cover rounded mx-auto"
+        />
+      </td>
+      <td className="py-2 px-4 text-left">{food.requestedFood.name}</td>
+      <td className="py-2 px-4 text-center">{food.requestedQuantity}</td>
+      <td className="py-2 px-4 text-center">{food.expiredDate}</td>
+      <td className="py-2 px-4 text-left">{food.pickupLocation}</td>
+      <td className="py-2 px-4 text-center">
+        <Link
+          to={`/allFoods/${food.requestedFood.id}`}
+          className="text-info hover:underline"
+        >
+          View Details
+        </Link>
+      </td>
+      <td className="py-2 px-4 w-36 text-center">
+        <select
+          className="select select-sm select-bordered w-full"
+          value={status}
+          disabled={disabled}
+          onChange={handleChange}
+        >
+          <option value="requested">requested</option>
+          <option value="Received">Received</option>
+        </select>
+      </td>
+    </tr>
   );
 };
 

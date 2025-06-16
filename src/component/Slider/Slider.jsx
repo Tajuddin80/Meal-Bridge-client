@@ -3,44 +3,42 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 import "swiper/css/navigation";
 import { Link, Outlet } from "react-router";
-
-
 
 function Slider() {
   const swiperRef = useRef(null);
 
   const slides = [
- {
-  title: "Food Sharing Drive: Dhaka Edition",
-  description:
-    "Be part of our community initiative to collect surplus food from restaurants and distribute to those in need across Dhaka city.",
-  image: "https://i.ibb.co/C3F02HkP/pexels-rdne-6646864.jpg",
-  date: "2025-06-20",
-},
-{
-  title: "Zero Waste Cooking Workshop",
-  description:
-    "Learn creative ways to use every part of your vegetables and reduce kitchen waste in this interactive session.",
-  image: "https://i.ibb.co/XkCp2ZL7/pexels-rdne-6647010.jpg",
-  date: "2025-06-28",
-},
-{
-  title: "Community Fridge Launch Event",
-  description:
-    "Join us as we inaugurate our first community fridge, making it easier for everyone to donate or access free surplus food.",
-  image: "https://i.ibb.co/VWsLgmb9/pexels-rdne-6646768.jpg",
-  date: "2025-07-05",
-}
-// https://i.ibb.co/VWsLgmb9/pexels-rdne-6646768.jpg
-// https://i.ibb.co/XkCp2ZL7/pexels-rdne-6647010.jpg
-// https://i.ibb.co/C3F02HkP/pexels-rdne-6646864.jpg
+    {
+      title: "Food Sharing Drive: Dhaka Edition",
+      description:
+        "Be part of our community initiative to collect surplus food from restaurants and distribute to those in need across Dhaka city.",
+      image: "https://i.ibb.co/C3F02HkP/pexels-rdne-6646864.jpg",
+      date: "2025-06-20",
+    },
+    {
+      title: "Zero Waste Cooking Workshop",
+      description:
+        "Learn creative ways to use every part of your vegetables and reduce kitchen waste in this interactive session.",
+      image: "https://i.ibb.co/XkCp2ZL7/pexels-rdne-6647010.jpg",
+      date: "2025-06-28",
+    },
+    {
+      title: "Community Fridge Launch Event",
+      description:
+        "Join us as we inaugurate our first community fridge, making it easier for everyone to donate or access free surplus food.",
+      image: "https://i.ibb.co/VWsLgmb9/pexels-rdne-6646768.jpg",
+      date: "2025-07-05",
+    },
+    // https://i.ibb.co/VWsLgmb9/pexels-rdne-6646768.jpg
+    // https://i.ibb.co/XkCp2ZL7/pexels-rdne-6647010.jpg
+    // https://i.ibb.co/C3F02HkP/pexels-rdne-6646864.jpg
   ];
 
   return (
-  <>
+    <>
       <div className="bg-gradient-to-r from-base-200 via-base-100 to-base-300 text-base-content rounded-lg ">
         <div className="w-[95vw] mx-auto h-auto md:h-[600px] lg:h-[650px] flex items-center md:px-6 lg:px-0">
           <Swiper
@@ -120,12 +118,6 @@ function Slider() {
         <Outlet />
       </div>
     </>
-
-
-
-
-
-
   );
 }
 

@@ -12,7 +12,7 @@ const ManageMyFoods = () => {
 
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true); // added loading state
-useEffect(() => {
+  useEffect(() => {
     const fetchMyFoods = async () => {
       if (user) {
         setLoading(true);
@@ -30,50 +30,73 @@ useEffect(() => {
     fetchMyFoods();
   }, [user]);
 
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch(`http://localhost:3000/allfoods/${id}`, {
-          method: "DELETE",
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.deletedCount > 0) {
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Your food has been deleted",
-                showConfirmButton: false,
-                timer: 1500,
-              });
-
-              setFoods((prevFoods) =>
-                prevFoods.filter((food) => food._id !== id)
-              );
-            }
-          })
-          .catch((error) => {
-            console.error("Delete error:", error);
-
-            Swal.fire({
-              position: "center",
-              icon: "error", // small typo, use lowercase "error"
-              title: "Something went wrong while deleting.",
-              showConfirmButton: false,
-              timer: 1500,
-            });
+const handleDelete = (id) => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        if (!user) {
+          Swal.fire({
+            icon: "error",
+            title: "Not authenticated!",
+            text: "Please login first.",
           });
+          return;
+        }
+
+        const token = await user.getIdToken();
+
+        const response = await fetch(`http://localhost:3000/allfoods/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.deletedCount > 0) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Your food has been deleted",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+
+          setFoods((prevFoods) => prevFoods.filter((food) => food._id !== id));
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: data.message || "Deletion failed",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Something went wrong while deleting.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
-    });
-  };
+    }
+  });
+};
+
+
 
   return (
     <div>

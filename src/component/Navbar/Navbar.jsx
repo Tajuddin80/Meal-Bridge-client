@@ -8,7 +8,6 @@ const Navbar = () => {
   const { user, handleLogout } = useContext(AuthContext);
   const [theme, setTheme] = useState("light");
 
-
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "light";
     setTheme(savedTheme);

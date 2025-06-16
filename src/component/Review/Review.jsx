@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useContext } from "react";
-import { Link } from "react-router"; 
+import { Link } from "react-router";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 
@@ -29,7 +29,7 @@ const Review = () => {
       message,
       email: user?.email || "anonymous",
       photoURL: user?.photoURL || "", // fallback values
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     axios
@@ -39,13 +39,13 @@ const Review = () => {
           Swal.fire({
             position: "center",
             icon: "success",
-            title: "Thanks for your feedback! You can check your review at about us page",
+            title:
+              "Thanks for your feedback! You can check your review at about us page",
             showConfirmButton: false,
             timer: 2500,
           });
           setRating(0);
           setMessage("");
-          
         }
       })
       .catch((err) => {
@@ -119,7 +119,7 @@ const Review = () => {
       <div className="flex items-center justify-center">
         <Link
           to="/"
-           onClick={() => window.scrollTo(0, 0)}
+          onClick={() => window.scrollTo(0, 0)}
           className="text-sm text-base-content opacity-70  hover:underline"
         >
           Maybe later

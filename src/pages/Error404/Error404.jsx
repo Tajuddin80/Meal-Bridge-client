@@ -28,7 +28,11 @@ const Error404 = () => {
           </div>
         </Link>
         <h2 className="mb-4 font-sans text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:leading-none">
-          <img className="rounded-lg" src='https://i.ibb.co/NgFKV1kF/404.webp' alt="404" />
+          <img
+            className="rounded-lg"
+            src="https://i.ibb.co/NgFKV1kF/404.webp"
+            alt="404"
+          />
         </h2>
         <p className="text-base text-gray-700 md:text-lg sm:px-4 text-center">
           <Link

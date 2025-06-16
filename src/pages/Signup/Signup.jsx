@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router";
 import Swal from "sweetalert2";
 import { updateProfile } from "firebase/auth";
 // import { Helmet } from "react-helmet";
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from "lucide-react";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import axios from "axios";
 
@@ -12,160 +12,168 @@ const Signup = () => {
   const [success, setSuccess] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
-  const { handleEmailSignup, setUser, setEmail, setUsername,handleGoogleSignIn, setPhoto } =
-    use(AuthContext);
+  const {
+    handleEmailSignup,
+    setUser,
+    setEmail,
+    setUsername,
+    handleGoogleSignIn,
+    setPhoto,
+  } = use(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
 
   const from = location.state?.from?.pathname || "/";
 
-const handleEmailSignupFunc = async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const { name, photourl, email, password } = Object.fromEntries(formData.entries());
+  const handleEmailSignupFunc = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const { name, photourl, email, password } = Object.fromEntries(
+      formData.entries()
+    );
 
-  // Password validation
-  const isValidLength = password.length >= 8;
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+    // Password validation
+    const isValidLength = password.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
 
-  if (!isValidLength || !hasUpperCase || !hasLowerCase || !hasSpecialChar) {
-    setError("Password must be at least 8 characters and include uppercase, lowercase, and a special character.");
-    return;
-  }
+    if (!isValidLength || !hasUpperCase || !hasLowerCase || !hasSpecialChar) {
+      setError(
+        "Password must be at least 8 characters and include uppercase, lowercase, and a special character."
+      );
+      return;
+    }
 
-  setError("");
+    setError("");
 
-  try {
-    // Check if user email already exists in DB
-    const usersRes = await axios.get("http://localhost:3000/users");
-    const usersData = usersRes.data;
+    try {
+      // Check if user email already exists in DB
+      const usersRes = await axios.get("http://localhost:3000/users");
+      const usersData = usersRes.data;
 
-    const emailExists = usersData.some((u) => u.email === email);
-    if (emailExists) {
+      const emailExists = usersData.some((u) => u.email === email);
+      if (emailExists) {
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Email already registered",
+          text: "Please try signing in.",
+          showConfirmButton: true,
+        });
+        return;
+      }
+
+      // Firebase signup
+      const result = await handleEmailSignup(email, password);
+      const user = result.user;
+
+      await updateProfile(user, {
+        displayName: name,
+        photoURL: photourl,
+      });
+
+      // Save user to DB
+      const userInfo = { name, photo: photourl, email };
+      const saveRes = await fetch("http://localhost:3000/adduser", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(userInfo),
+      });
+      const saveData = await saveRes.json();
+
+      if (saveData.insertedId) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Signup Successful!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setUser(user);
+        setUsername(user?.displayName);
+        setEmail(user?.email);
+        setPhoto(user?.photoURL);
+        navigate(from, { replace: true });
+      } else {
+        throw new Error("Failed to save user data");
+      }
+    } catch (err) {
       Swal.fire({
         position: "center",
-        icon: "warning",
-        title: "Email already registered",
-        text: "Please try signing in.",
+        icon: "error",
+        title: "Signup Failed",
+        text: err.message,
         showConfirmButton: true,
       });
-      return;
+      setError(err.message);
     }
+  };
 
-    // Firebase signup
-    const result = await handleEmailSignup(email, password);
-    const user = result.user;
+  const handleGoogleClick = async () => {
+    try {
+      const result = await handleGoogleSignIn();
+      const user = result.user;
 
-    await updateProfile(user, {
-      displayName: name,
-      photoURL: photourl,
-    });
+      const userInfo = {
+        name: user?.displayName,
+        photo: user?.photoURL,
+        email: user?.email,
+      };
 
-    // Save user to DB
-    const userInfo = { name, photo: photourl, email };
-    const saveRes = await fetch("http://localhost:3000/adduser", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(userInfo),
-    });
-    const saveData = await saveRes.json();
+      // Fetch existing users
+      const usersRes = await axios.get("http://localhost:3000/users");
+      const usersData = usersRes.data;
+      const emailExists = usersData.some((u) => u.email === user?.email);
 
-    if (saveData.insertedId) {
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Signup Successful!",
-        showConfirmButton: false,
-        timer: 2000,
+      if (emailExists) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Welcome back!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setUser(user);
+        navigate(from, { replace: true });
+        return;
+      }
+
+      // If not exists, insert
+      const saveRes = await fetch("http://localhost:3000/adduser", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(userInfo),
       });
-      setUser(user);
-      setUsername(user?.displayName);
-      setEmail(user?.email);
-      setPhoto(user?.photoURL);
-      navigate(from, { replace: true });
-    } else {
-      throw new Error("Failed to save user data");
-    }
-  } catch (err) {
-    Swal.fire({
-      position: "center",
-      icon: "error",
-      title: "Signup Failed",
-      text: err.message,
-      showConfirmButton: true,
-    });
-    setError(err.message);
-  }
-};
+      const saveData = await saveRes.json();
 
-const handleGoogleClick = async () => {
-  try {
-    const result = await handleGoogleSignIn();
-    const user = result.user;
-
-    const userInfo = {
-      name: user?.displayName,
-      photo: user?.photoURL,
-      email: user?.email,
-    };
-
-    // Fetch existing users
-    const usersRes = await axios.get("http://localhost:3000/users");
-    const usersData = usersRes.data;
-    const emailExists = usersData.some((u) => u.email === user?.email);
-
-    if (emailExists) {
+      if (saveData.insertedId) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Google Sign-in Successful",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setUser(user);
+        navigate(from, { replace: true });
+      }
+    } catch (error) {
+      setError(error.message);
       Swal.fire({
         position: "center",
-        icon: "success",
-        title: "Welcome back!",
+        icon: "error",
+        title: "Sign-in Failed",
+        text: error.message,
         showConfirmButton: false,
         timer: 1500,
       });
-      setUser(user);
-      navigate(from, { replace: true });
-      return;
     }
-
-    // If not exists, insert
-    const saveRes = await fetch("http://localhost:3000/adduser", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(userInfo),
-    });
-    const saveData = await saveRes.json();
-
-    if (saveData.insertedId) {
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Google Sign-in Successful",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      setUser(user);
-      navigate(from, { replace: true });
-    }
-
-  } catch (error) {
-    setError(error.message);
-    Swal.fire({
-      position: "center",
-      icon: "error",
-      title: "Sign-in Failed",
-      text: error.message,
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  }
-};
-
+  };
 
   return (
     <div className="mx-auto max-w-md p-4 my-20 rounded-md shadow sm:p-8 bg-base-100 text-base-content">
-            {/* <Helmet>
+      {/* <Helmet>
                 <title>Plant Book 🌱 Register</title>
             </Helmet> */}
       <h2 className="mb-3 text-3xl font-semibold text-center">
@@ -242,31 +250,35 @@ const handleGoogleClick = async () => {
             />
           </div>
 
-       <div className="space-y-2">
-      <label
-        htmlFor="password"
-        className="block text-sm text-base-content"
-      >
-        Password
-      </label>
-      <div className="relative">
-        <input
-          type={showPassword ? 'text' : 'password'}
-          name="password"
-          id="password"
-          required
-          placeholder="********"
-          className="w-full px-3 py-2 border rounded-md border-base-300 bg-base-100 text-base-content pr-10"
-        />
-        <button
-          type="button"
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-base-content"
-          onClick={() => setShowPassword(!showPassword)}
-        >
-          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-        </button>
-      </div>
-    </div>
+          <div className="space-y-2">
+            <label
+              htmlFor="password"
+              className="block text-sm text-base-content"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                id="password"
+                required
+                placeholder="********"
+                className="w-full px-3 py-2 border rounded-md border-base-300 bg-base-100 text-base-content pr-10"
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-base-content"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="text-red-500 text-sm text-center">{error}</div>

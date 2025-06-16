@@ -1,10 +1,7 @@
-
 import { Link } from "react-router";
 import FoodCard from "./FoodCard";
 
-const FeaturedFoods = ({ featuredFood ,loading}) => {
-
-
+const FeaturedFoods = ({ featuredFood, loading }) => {
   return (
     <div className="mb-20">
       <h2 className="text-4xl font-semibold mb-3 text-center">
@@ -12,22 +9,20 @@ const FeaturedFoods = ({ featuredFood ,loading}) => {
       </h2>
       <hr className="md:w-[35vw] lg:w-[20vw] w-[65vw] mb-10 mx-auto" />
       <div className="grid gap-8 w-[95vw] mx-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-
-        {
-          featuredFood.map(food => <FoodCard loading={loading} key={food._id} food={food}></FoodCard>)
-        }
+        {featuredFood.map((food) => (
+          <FoodCard loading={loading} key={food._id} food={food}></FoodCard>
+        ))}
       </div>
 
-
-   <p className="text-base text-gray-700 md:text-lg sm:px-4 my-10 text-center">
-          <Link
-            to="/availableFoods"
-            className="text-center px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-blue-600 inline-block"
-          >
-            <span className="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out transform translate-y-0 bg-primary group-hover:h-full opacity-90"></span>
-            <span className="relative group-hover:text-white">View all</span>
-          </Link>
-        </p>
+      <p className="text-base text-gray-700 md:text-lg sm:px-4 my-10 text-center">
+        <Link
+          to="/availableFoods"
+          className="text-center px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-blue-600 inline-block"
+        >
+          <span className="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out transform translate-y-0 bg-primary group-hover:h-full opacity-90"></span>
+          <span className="relative group-hover:text-white">View all</span>
+        </Link>
+      </p>
     </div>
   );
 };

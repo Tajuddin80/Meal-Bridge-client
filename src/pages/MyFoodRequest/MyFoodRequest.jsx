@@ -8,21 +8,20 @@ const MyFoodRequest = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
 
-useEffect(() => {
-  if (user?.accessToken) {
-    setLoading(true);
-    myRequestedFoodsPromise(user.accessToken)
-      .then((foods) => {
-        setAllFoods(foods);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch requested foods:", err);
-        setLoading(false);
-      });
-  }
-}, [user?.accessToken]);
-
+  useEffect(() => {
+    if (user?.accessToken) {
+      setLoading(true);
+      myRequestedFoodsPromise(user.accessToken)
+        .then((foods) => {
+          setAllFoods(foods);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch requested foods:", err);
+          setLoading(false);
+        });
+    }
+  }, [user?.accessToken]);
 
   const handleRemoveFood = (id) => {
     setAllFoods((prev) => prev.filter((food) => food._id !== id));

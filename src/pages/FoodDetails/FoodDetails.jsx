@@ -16,7 +16,9 @@ const FoodDetails = () => {
     const fetchFoodDetails = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`http://localhost:3000/allFoods/${id}`);
+        const { data } = await axios.get(
+          `http://localhost:3000/allFoods/${id}`
+        );
         setFood(data);
       } catch (err) {
         console.error("Error fetching food details:", err);
@@ -122,10 +124,15 @@ const FoodDetails = () => {
         return;
       }
 
-      const res = await axios.post(
-        `http://localhost:3000/requestedFood`,
-        requestData
-      );
+  const res = await axios.post(
+  `http://localhost:3000/requestedFood`,
+  requestData,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`, 
+    },
+  }
+);
 
       if (res.data.insertedId) {
         Swal.fire({
@@ -152,18 +159,24 @@ const FoodDetails = () => {
 
   return (
     <>
-      <motion.div className="max-w-4xl mx-auto my-10 p-6 bg-base-100 shadow-lg rounded-lg border border-base-300"
+      <motion.div
+        className="max-w-4xl mx-auto my-10 p-6 bg-base-100 shadow-lg rounded-lg border border-base-300"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}>
-        <motion.h2 className="text-3xl font-bold mb-6 text-primary text-center"
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <motion.h2
+          className="text-3xl font-bold mb-6 text-primary text-center"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}>
+          transition={{ delay: 0.3 }}
+        >
           {food.foodName}
         </motion.h2>
 
-        <motion.img src={food.foodImage} alt={food.foodName}
+        <motion.img
+          src={food.foodImage}
+          alt={food.foodName}
           className="w-full h-72 object-cover rounded mb-6 shadow"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -172,68 +185,153 @@ const FoodDetails = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2 text-base-content/80">
-            <p><strong>Category:</strong> {food.category}</p>
-            <p><strong>Quantity:</strong> {food.foodQuantity}</p>
-            <p><strong>Pickup Location:</strong> {food.pickupLocation}</p>
-            <p><strong>Expires on:</strong> {food.expiredDate}</p>
-            <p><strong>Status:</strong> {food.foodStatus}</p>
-            {food.additionalNotes && <p><strong>Notes:</strong> {food.additionalNotes}</p>}
+            <p>
+              <strong>Category:</strong> {food.category}
+            </p>
+            <p>
+              <strong>Quantity:</strong> {food.foodQuantity}
+            </p>
+            <p>
+              <strong>Pickup Location:</strong> {food.pickupLocation}
+            </p>
+            <p>
+              <strong>Expires on:</strong> {food.expiredDate}
+            </p>
+            <p>
+              <strong>Status:</strong> {food.foodStatus}
+            </p>
+            {food.additionalNotes && (
+              <p>
+                <strong>Notes:</strong> {food.additionalNotes}
+              </p>
+            )}
           </div>
 
-          <motion.div className="p-4 rounded-lg shadow-lg bg-base-200 flex flex-col items-center text-center"
+          <motion.div
+            className="p-4 rounded-lg shadow-lg bg-base-200 flex flex-col items-center text-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}>
-            <img src={food.donor?.donorImage} alt={food.donor?.donorName}
-              className="w-20 h-20 rounded-full mb-3 object-cover" />
+            transition={{ delay: 0.5 }}
+          >
+            <img
+              src={food.donor?.donorImage}
+              alt={food.donor?.donorName}
+              className="w-20 h-20 rounded-full mb-3 object-cover"
+            />
             <h3 className="text-lg font-semibold">{food.donor?.donorName}</h3>
-            <p className="text-sm text-base-content/70">{food.donor?.donorEmail}</p>
+            <p className="text-sm text-base-content/70">
+              {food.donor?.donorEmail}
+            </p>
             <span className="badge badge-primary mt-2">Donor</span>
           </motion.div>
         </div>
 
         <div className="mt-8 flex justify-center gap-4">
-          <Link to="/availableFoods" className="btn btn-outline btn-primary">View All Foods</Link>
-          <Link to="/" className="btn btn-secondary">Go Home</Link>
-          <button onClick={handleRequestFood} className="btn btn-outline btn-primary">Request Food</button>
+          <Link to="/availableFoods" className="btn btn-outline btn-primary">
+            View All Foods
+          </Link>
+          <Link to="/" className="btn btn-secondary">
+            Go Home
+          </Link>
+          <button
+            onClick={handleRequestFood}
+            className="btn btn-outline btn-primary"
+          >
+            Request Food
+          </button>
         </div>
       </motion.div>
 
       <dialog id="request_modal" className="modal">
         <div className="modal-box w-full max-w-3xl lg:max-w-5xl">
-          <h3 className="font-bold text-2xl text-primary mb-4">Request Food: {food.foodName}</h3>
+          <h3 className="font-bold text-2xl text-primary mb-4">
+            Request Food: {food.foodName}
+          </h3>
           <div className="flex flex-col md:flex-row gap-6">
-            <img src={food.foodImage} alt={food.foodName} className="w-full md:w-1/2 rounded shadow" />
+            <img
+              src={food.foodImage}
+              alt={food.foodName}
+              className="w-full md:w-1/2 rounded shadow"
+            />
             <div className="w-full md:w-1/2 space-y-3">
               <div>
-                <label className="label"><span className="label-text font-semibold">Request Quantity (max: {food.foodQuantity})</span></label>
-                <input type="number" id="requestQty" min="1" className="input input-bordered w-full" placeholder={`Enter up to ${food.foodQuantity}`} />
+                <label className="label">
+                  <span className="label-text font-semibold">
+                    Request Quantity (max: {food.foodQuantity})
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  id="requestQty"
+                  min="1"
+                  className="input input-bordered w-full"
+                  placeholder={`Enter up to ${food.foodQuantity}`}
+                />
               </div>
               <div>
-                <label className="label"><span className="label-text font-semibold">Request Date</span></label>
-                <input type="text" value={new Date().toLocaleString()} disabled className="input input-bordered w-full" />
+                <label className="label">
+                  <span className="label-text font-semibold">Request Date</span>
+                </label>
+                <input
+                  type="text"
+                  value={new Date().toLocaleString()}
+                  disabled
+                  className="input input-bordered w-full"
+                />
               </div>
               <div>
-                <label className="label"><span className="label-text font-semibold">Your Name</span></label>
-                <input type="text" value={user?.displayName || ""} disabled className="input input-bordered w-full" />
+                <label className="label">
+                  <span className="label-text font-semibold">Your Name</span>
+                </label>
+                <input
+                  type="text"
+                  value={user?.displayName || ""}
+                  disabled
+                  className="input input-bordered w-full"
+                />
               </div>
               <div>
-                <label className="label"><span className="label-text font-semibold">Your Email</span></label>
-                <input type="email" value={user?.email || ""} disabled className="input input-bordered w-full" />
+                <label className="label">
+                  <span className="label-text font-semibold">Your Email</span>
+                </label>
+                <input
+                  type="email"
+                  value={user?.email || ""}
+                  disabled
+                  className="input input-bordered w-full"
+                />
               </div>
               {user?.photoURL && (
                 <div className="flex items-center gap-3 mt-2">
-                  <img src={user.photoURL} alt={user.displayName} className="w-12 h-12 rounded-full border shadow" />
-                  <span className="text-sm text-base-content/70">This is your profile photo</span>
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName}
+                    className="w-12 h-12 rounded-full border shadow"
+                  />
+                  <span className="text-sm text-base-content/70">
+                    This is your profile photo
+                  </span>
                 </div>
               )}
               <div>
-                <label className="label"><span className="label-text font-semibold">Additional Notes (optional)</span></label>
-                <textarea id="requestNotes" className="textarea textarea-bordered w-full" placeholder="Write any additional notes..."></textarea>
+                <label className="label">
+                  <span className="label-text font-semibold">
+                    Additional Notes (optional)
+                  </span>
+                </label>
+                <textarea
+                  id="requestNotes"
+                  className="textarea textarea-bordered w-full"
+                  placeholder="Write any additional notes..."
+                ></textarea>
               </div>
               <div className="flex justify-end gap-3 mt-4">
-                <form method="dialog"><button className="btn">Close</button></form>
-                <button className="btn btn-primary" onClick={submitRequest}>Submit Request</button>
+                <form method="dialog">
+                  <button className="btn">Close</button>
+                </form>
+                <button className="btn btn-primary" onClick={submitRequest}>
+                  Submit Request
+                </button>
               </div>
             </div>
           </div>

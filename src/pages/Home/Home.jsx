@@ -8,34 +8,31 @@ import { useContext } from "react";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import MealBridgeBanner from "../../component/Banner/MealBridgeBanner";
 const Home = () => {
-  const {user} = useContext(AuthContext)
-   const [featuredFood, setFeaturedFood] = useState([]);
-   const [loading , setLoading] = useState(false)
+  const { user } = useContext(AuthContext);
+  const [featuredFood, setFeaturedFood] = useState([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    setLoading(true)
-  axios.get("http://localhost:3000/featuredfood")
-    .then((res) => 
-    {
-
-      setFeaturedFood(res.data)
-      setLoading(false)
-    }
-    )
-    .catch((err) => console.error("Error fetching featured food:", err));
-}, []);
+    setLoading(true);
+    axios
+      .get("http://localhost:3000/featuredfood")
+      .then((res) => {
+        setFeaturedFood(res.data);
+        setLoading(false);
+      })
+      .catch((err) => console.error("Error fetching featured food:", err));
+  }, []);
 
   return (
     <>
       <MealBridgeBanner></MealBridgeBanner>
-      <FeaturedFoods loading={loading} featuredFood={featuredFood}></FeaturedFoods>
+      <FeaturedFoods
+        loading={loading}
+        featuredFood={featuredFood}
+      ></FeaturedFoods>
       <Slider></Slider>
       <Faq></Faq>
 
-{
-  user &&   <Review></Review>
-}
-
-    
+      {user && <Review></Review>}
     </>
   );
 };

@@ -37,7 +37,10 @@ const AvailableFood = () => {
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("availableFood_category", JSON.stringify(selectedCategory));
+    localStorage.setItem(
+      "availableFood_category",
+      JSON.stringify(selectedCategory)
+    );
   }, [selectedCategory]);
 
   useEffect(() => {
@@ -48,7 +51,12 @@ const AvailableFood = () => {
     localStorage.setItem("availableFood_viewType", JSON.stringify(viewType));
   }, [viewType]);
 
-  const { data: allFoods = [], isLoading, isError, error } = useQuery({
+  const {
+    data: allFoods = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["allFoods"],
     queryFn: fetchFoods,
   });
@@ -195,7 +203,9 @@ const AvailableFood = () => {
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       ) : filteredFoods.length === 0 ? (
-        <div className="text-center py-6">No food found for selected filters.</div>
+        <div className="text-center py-6">
+          No food found for selected filters.
+        </div>
       ) : viewType === "table" ? (
         <table className="w-[95vw] my-4 mx-auto bg-base-50 border border-base-300 rounded-lg shadow-sm text-base-content">
           <thead className="bg-primary text-primary-content">

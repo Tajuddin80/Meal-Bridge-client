@@ -12,7 +12,6 @@ const MealBridgeBanner = () => {
         className="absolute w-full h-full object-cover"
       />
 
-
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-center items-center h-full text-center text-white px-6 md:px-12">
         <motion.h1

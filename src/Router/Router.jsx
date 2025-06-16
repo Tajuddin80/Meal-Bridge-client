@@ -45,33 +45,21 @@ export const router = createBrowserRouter([
         errorElement: <Error404 />,
       },
 
-      // {
-      //   path: "/updateFood/:id",
-
-      //   element: (
-      //     <PrivateRoute>
-      //       <UpdateFood></UpdateFood>
-      //     </PrivateRoute>
-      //   ),
-      //   loader: ({ params }) =>
-      //     fetch(`http://localhost:3000/allfoods/${params.id}`),
-      //   errorElement: <Error404 />,
-      // },
-
-    {
-  path: "/updateFood/:id",
-  element: (
-    <PrivateRoute>
-      <UpdateFood />
-    </PrivateRoute>
-  ),
-  loader: async ({ params }) => {
-    const res = await fetch(`http://localhost:3000/allFoods/${params.id}`);
-    if (!res.ok) throw new Response("Not Found", { status: 404 });
-    return res.json();
-  }
-}
-,
+      {
+        path: "/updateFood/:id",
+        element: (
+          <PrivateRoute>
+            <UpdateFood />
+          </PrivateRoute>
+        ),
+        loader: async ({ params }) => {
+          const res = await fetch(
+            `http://localhost:3000/allFoods/${params.id}`
+          );
+          if (!res.ok) throw new Response("Not Found", { status: 404 });
+          return res.json();
+        },
+      },
       {
         path: "/addFood",
         element: (

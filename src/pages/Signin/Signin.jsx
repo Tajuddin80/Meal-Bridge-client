@@ -24,149 +24,149 @@ const Signin = () => {
 
   const from = location.state?.from?.pathname || "/";
 
-const handleEmailSigninFunc = async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const loginDetails = Object.fromEntries(formData.entries());
+  const handleEmailSigninFunc = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const loginDetails = Object.fromEntries(formData.entries());
 
-  try {
-    // Sign in with Firebase
-    const result = await handleEmailSignin(loginDetails.email, loginDetails.password);
-    const user = result.user;
+    try {
+      // Sign in with Firebase
+      const result = await handleEmailSignin(
+        loginDetails.email,
+        loginDetails.password
+      );
+      const user = result.user;
 
-    if (user) {
-      // Get all users from your DB
-      const res = await axios.get("http://localhost:3000/users");
-      const usersList = res.data;
+      if (user) {
+        // Get all users from your DB
+        const res = await axios.get("http://localhost:3000/users");
+        const usersList = res.data;
 
-      // Check if email exists
-      const emailExists = usersList.some((u) => u.email === user.email);
+        // Check if email exists
+        const emailExists = usersList.some((u) => u.email === user.email);
 
-      if (emailExists) {
-        // User exists → Welcome back
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: `Welcome back, ${user.displayName || 'User'}!`,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      } else {
-        // New user → Insert into DB
-        const userInfo = {
-          name: user?.displayName || "Unknown",
-          photo: user?.photoURL || "",
-          email: user?.email,
-        };
-
-        const saveRes = await fetch("http://localhost:3000/adduser", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify(userInfo),
-        });
-        const saveData = await saveRes.json();
-
-        if (saveData.insertedId) {
+        if (emailExists) {
+          // User exists → Welcome back
           Swal.fire({
             position: "center",
             icon: "success",
-            title: "Welcome! Your account has been created.",
+            title: `Welcome back, ${user.displayName || "User"}!`,
             showConfirmButton: false,
             timer: 1500,
           });
         } else {
-          throw new Error("Failed to save user data");
+          // New user → Insert into DB
+          const userInfo = {
+            name: user?.displayName || "Unknown",
+            photo: user?.photoURL || "",
+            email: user?.email,
+          };
+
+          const saveRes = await fetch("http://localhost:3000/adduser", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(userInfo),
+          });
+          const saveData = await saveRes.json();
+
+          if (saveData.insertedId) {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Welcome! Your account has been created.",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            throw new Error("Failed to save user data");
+          }
         }
+
+        // Update context & navigate
+        setSuccess("Signin successful");
+        setError("");
+
+        setUser(user);
+        setUsername(user?.displayName);
+        setPhoto(user?.photoURL);
+        setEmail(user?.email);
+
+        navigate(from, { replace: true });
+      }
+    } catch (error) {
+      setError(error.message);
+      setSuccess("");
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Wrong Email or Password",
+        text: error.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
+
+  const handleGoogleClick = async () => {
+    try {
+      const result = await handleGoogleSignIn();
+      const user = result.user;
+
+      const userInfo = {
+        name: user?.displayName,
+        photo: user?.photoURL,
+        email: user?.email,
+      };
+
+      // Fetch existing users
+      const usersRes = await axios.get("http://localhost:3000/users");
+      const usersData = usersRes.data;
+      const emailExists = usersData.some((u) => u.email === user?.email);
+
+      if (emailExists) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Welcome back!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setUser(user);
+        navigate(from, { replace: true });
+        return;
       }
 
-      // Update context & navigate
-      setSuccess("Signin successful");
-      setError("");
+      // If not exists, insert
+      const saveRes = await fetch("http://localhost:3000/adduser", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(userInfo),
+      });
+      const saveData = await saveRes.json();
 
-      setUser(user);
-      setUsername(user?.displayName);
-      setPhoto(user?.photoURL);
-      setEmail(user?.email);
-
-      navigate(from, { replace: true });
-    }
-  } catch (error) {
-    setError(error.message);
-    setSuccess("");
-    Swal.fire({
-      position: "center",
-      icon: "error",
-      title: "Wrong Email or Password",
-      text: error.message,
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  }
-};
-
-
-const handleGoogleClick = async () => {
-  try {
-    const result = await handleGoogleSignIn();
-    const user = result.user;
-
-    const userInfo = {
-      name: user?.displayName,
-      photo: user?.photoURL,
-      email: user?.email,
-    };
-
-    // Fetch existing users
-    const usersRes = await axios.get("http://localhost:3000/users");
-    const usersData = usersRes.data;
-    const emailExists = usersData.some((u) => u.email === user?.email);
-
-    if (emailExists) {
+      if (saveData.insertedId) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Google Sign-in Successful",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setUser(user);
+        navigate(from, { replace: true });
+      }
+    } catch (error) {
+      setError(error.message);
       Swal.fire({
         position: "center",
-        icon: "success",
-        title: "Welcome back!",
+        icon: "error",
+        title: "Sign-in Failed",
+        text: error.message,
         showConfirmButton: false,
         timer: 1500,
       });
-      setUser(user);
-      navigate(from, { replace: true });
-      return;
     }
-
-    // If not exists, insert
-    const saveRes = await fetch("http://localhost:3000/adduser", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(userInfo),
-    });
-    const saveData = await saveRes.json();
-
-    if (saveData.insertedId) {
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Google Sign-in Successful",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      setUser(user);
-      navigate(from, { replace: true });
-    }
-
-  } catch (error) {
-    setError(error.message);
-    Swal.fire({
-      position: "center",
-      icon: "error",
-      title: "Sign-in Failed",
-      text: error.message,
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  }
-};
-
+  };
 
   return (
     <div className="mx-auto max-w-md p-4 my-20 rounded-md shadow sm:p-8 bg-base-100 text-base-content">
