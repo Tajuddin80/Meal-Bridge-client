@@ -36,7 +36,7 @@ const AddFood = () => {
       pickupLocation: foodDetails.pickupLocation,
       expiredDate: foodDetails.expiredDate,
       additionalNotes: foodDetails.additionalNotes,
-      foodStatus: "available",
+      foodStatus: foodDetails.foodStatus,
       category: foodDetails.category,
       donor: {
         donorName: formData.donorName,
@@ -44,7 +44,7 @@ const AddFood = () => {
         donorImage: formData.donorImage,
       },
     };
-    console.log(fullData);
+    // console.log(fullData);
     axios
       .post("http://localhost:3000/addFood", fullData)
       .then((res) => {
@@ -146,7 +146,7 @@ const AddFood = () => {
             <label className="block mb-1 font-medium">Food Status</label>
             <select
               name="foodStatus"
-              defaultValue="available"
+              // defaultValue="available"
               className="select select-bordered w-full"
               required
             >
