@@ -44,7 +44,7 @@ const AddFood = () => {
         donorImage: formData.donorImage,
       },
     };
-    // console.log(fullData);
+   
     axios
       .post("http://localhost:3000/addFood", fullData)
       .then((res) => {

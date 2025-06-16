@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import MyFoodRequestSingleCard from "./MyFoodRequestSingleCard";
-import { myRequestedFoodsPromise } from "../../api/myRequestedFoodsApi";
+import { myRequestedFoodsPromise } from "../../api/myRequestedFoodsPromise";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 
 const MyFoodRequest = () => {
@@ -8,20 +8,21 @@ const MyFoodRequest = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    if (user?.email) {
-      setLoading(true);
-      myRequestedFoodsPromise(user.email)
-        .then((foods) => {
-          setAllFoods(foods);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Failed to fetch requested foods:", err);
-          setLoading(false);
-        });
-    }
-  }, [user?.email]);
+useEffect(() => {
+  if (user?.accessToken) {
+    setLoading(true);
+    myRequestedFoodsPromise(user.accessToken)
+      .then((foods) => {
+        setAllFoods(foods);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch requested foods:", err);
+        setLoading(false);
+      });
+  }
+}, [user?.accessToken]);
+
 
   const handleRemoveFood = (id) => {
     setAllFoods((prev) => prev.filter((food) => food._id !== id));

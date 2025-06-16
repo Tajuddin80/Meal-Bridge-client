@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 
 import SignleFood from "./SignleFood";
 import FoodCard from "../../component/FeaturedFoods/FoodCard";
-
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 
 const fetchFoods = async () => {
@@ -17,7 +16,6 @@ const AvailableFood = () => {
   const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
 
-  // On first load, try to get saved filters & viewType from localStorage
   const getSavedState = (key, defaultValue) => {
     try {
       const saved = localStorage.getItem(key);
@@ -38,7 +36,6 @@ const AvailableFood = () => {
   );
   const [searchText, setSearchText] = useState("");
 
-  // Save filters & viewType to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("availableFood_category", JSON.stringify(selectedCategory));
   }, [selectedCategory]);
@@ -51,34 +48,25 @@ const AvailableFood = () => {
     localStorage.setItem("availableFood_viewType", JSON.stringify(viewType));
   }, [viewType]);
 
-  const {
-    data: allFoods = [],
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
+  const { data: allFoods = [], isLoading, isError, error } = useQuery({
     queryKey: ["allFoods"],
     queryFn: fetchFoods,
   });
 
   const addFoodMutation = useMutation({
-    mutationFn: (newFood) =>
-      axios.post("http://localhost:3000/addfood", newFood),
+    mutationFn: (newFood) => axios.post("http://localhost:3000/addfood", newFood),
     onSuccess: () => {
       queryClient.invalidateQueries(["allFoods"]);
       Swal.fire({
-        position: "center",
         icon: "success",
-        title: "Demo food added, check at the end of this page",
-        showConfirmButton: true,
+        title: "Demo food added",
+        text: "Check at the end of this page",
       });
     },
     onError: () => {
       Swal.fire({
         icon: "error",
-        title: "Oops...",
-        text: "Failed to add sample food. Please try again.",
-        position: "top-end",
+        title: "Failed to add sample food",
         toast: true,
         timer: 2500,
         showConfirmButton: false,
@@ -91,8 +79,7 @@ const AvailableFood = () => {
       Swal.fire({
         icon: "warning",
         title: "Login Required",
-        text: "You must be logged in to add food.",
-        position: "top-end",
+        text: "Please log in to add food",
         toast: true,
         timer: 2500,
         showConfirmButton: false,
@@ -121,26 +108,21 @@ const AvailableFood = () => {
 
   const filteredFoods = allFoods
     .filter((food) =>
-      selectedCategory === "all"
-        ? true
-        : food.category?.toLowerCase() === selectedCategory.toLowerCase()
+      selectedCategory === "all" ? true :
+        food.category?.toLowerCase() === selectedCategory.toLowerCase()
     )
     .filter((food) =>
       food.foodName.toLowerCase().includes(searchText.toLowerCase())
     )
     .sort((a, b) => {
       if (sortOrder === "none") return 0;
-      const dateA = new Date(a.expiredDate).getTime() || 0;
-      const dateB = new Date(b.expiredDate).getTime() || 0;
+      const dateA = new Date(a.expiredDate).getTime();
+      const dateB = new Date(b.expiredDate).getTime();
       return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     });
 
   if (isError) {
-    return (
-      <div className="text-center text-error py-10">
-        Error loading foods: {error.message}
-      </div>
-    );
+    return <div className="text-center text-error py-10">Error loading foods: {error.message}</div>;
   }
 
   return (
@@ -200,9 +182,7 @@ const AvailableFood = () => {
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       ) : filteredFoods.length === 0 ? (
-        <div className="text-center py-6">
-          No food found for selected filters.
-        </div>
+        <div className="text-center py-6">No food found for selected filters.</div>
       ) : viewType === "table" ? (
         <table className="w-[95vw] my-4 mx-auto bg-base-50 border border-base-300 rounded-lg shadow-sm text-base-content">
           <thead className="bg-primary text-primary-content">

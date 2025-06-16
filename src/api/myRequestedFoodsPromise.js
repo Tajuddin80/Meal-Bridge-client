@@ -1,9 +1,11 @@
 import axios from "axios";
 
-export const myRequestedFoodsPromise = (email) => {
+export const myRequestedFoodsPromise = (accessToken) => {
   return axios
     .get(`http://localhost:3000/requestedFood`, {
-      params: { email }, // cleaner way to pass query param
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
     })
     .then((res) => res.data)
     .catch((err) => {
