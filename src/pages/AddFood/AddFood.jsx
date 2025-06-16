@@ -57,7 +57,7 @@ const AddFood = () => {
             timer: 1500,
           });
           form.reset();
-          navigate(`/myfoods/${formData.donorEmail}`);
+          navigate(`/manageMyFoods`);
         }
       })
       .catch((err) => console.error("Submission error:", err));

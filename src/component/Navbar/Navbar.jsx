@@ -58,7 +58,7 @@ const Navbar = () => {
       </li>
       <li className="text-lg whitespace-nowrap">
         <NavLink
-          to={`/myFoodRequest/${user?.email || ""}`}
+          to={`/myFoodRequest`}
           className={({ isActive }) => (isActive ? "underline font-bold" : "")}
         >
           My Food Request

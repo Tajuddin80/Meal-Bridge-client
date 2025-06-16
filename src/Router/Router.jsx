@@ -9,9 +9,9 @@ import AvailableFood from "../pages/AvailableFood/AvailableFood";
 import About from "../pages/About/About";
 import AddFood from "../pages/AddFood/AddFood";
 import ManageMyFoods from "../pages/ManageMyFood/ManageMyFoods";
-import axios from "axios";
 import FoodDetails from "../pages/FoodDetails/FoodDetails";
 import UpdateFood from "../pages/UpdateFood/UpdateFood";
+import MyFoodRequest from "../pages/MyFoodRequest/MyFoodRequest";
 
 export const router = createBrowserRouter([
   {
@@ -45,18 +45,33 @@ export const router = createBrowserRouter([
         errorElement: <Error404 />,
       },
 
-      {
-        path: "/updateFood/:id",
+      // {
+      //   path: "/updateFood/:id",
 
-        element: (
-          <PrivateRoute>
-            <UpdateFood></UpdateFood>
-          </PrivateRoute>
-        ),
-        loader: ({ params }) =>
-          fetch(`http://localhost:3000/allfoods/${params.id}`),
-        errorElement: <Error404 />,
-      },
+      //   element: (
+      //     <PrivateRoute>
+      //       <UpdateFood></UpdateFood>
+      //     </PrivateRoute>
+      //   ),
+      //   loader: ({ params }) =>
+      //     fetch(`http://localhost:3000/allfoods/${params.id}`),
+      //   errorElement: <Error404 />,
+      // },
+
+    {
+  path: "/updateFood/:id",
+  element: (
+    <PrivateRoute>
+      <UpdateFood />
+    </PrivateRoute>
+  ),
+  loader: async ({ params }) => {
+    const res = await fetch(`http://localhost:3000/allFoods/${params.id}`);
+    if (!res.ok) throw new Response("Not Found", { status: 404 });
+    return res.json();
+  }
+}
+,
       {
         path: "/addFood",
         element: (
@@ -67,6 +82,15 @@ export const router = createBrowserRouter([
         errorElement: <Error404 />,
       },
 
+      {
+        path: "/myFoodRequest",
+        element: (
+          <PrivateRoute>
+            <MyFoodRequest></MyFoodRequest>
+          </PrivateRoute>
+        ),
+        errorElement: <Error404 />,
+      },
       {
         path: "/manageMyFoods",
         element: (

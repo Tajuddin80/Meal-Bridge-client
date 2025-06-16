@@ -1,11 +1,11 @@
-import { useParams, Link } from "react-router";
+import { useParams, Link, useNavigate } from "react-router";
 import { use, useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import Swal from "sweetalert2";
-
 const FoodDetails = () => {
+  const navigate = useNavigate();
   const { user } = use(AuthContext);
   const { id } = useParams();
   const [food, setFood] = useState(null);
@@ -183,7 +183,6 @@ const FoodDetails = () => {
                   type="number"
                   id="requestQty"
                   min="1"
-                  max={food.foodQuantity}
                   className="input input-bordered w-full"
                   placeholder={`Enter up to ${food.foodQuantity}`}
                 />
@@ -250,18 +249,25 @@ const FoodDetails = () => {
                 </form>
                 <button
                   className="btn btn-primary"
-                  onClick={() => {
-                    const qty = document.getElementById("requestQty").value;
+                  onClick={async () => {
+                    const qtyRaw = document.getElementById("requestQty").value;
+                    const qty = parseInt(qtyRaw, 10);
+                    const notes = document.getElementById("requestNotes").value;
                     const modal = document.getElementById("request_modal");
 
-                    if (!qty || qty < 1 || qty > food.foodQuantity) {
-                      modal.close(); // Close the modal
+                    if (
+                      !qtyRaw ||
+                      isNaN(qty) ||
+                      qty < 1 ||
+                      qty > food.foodQuantity
+                    ) {
+                      modal.close();
 
                       Swal.fire({
                         position: "center",
                         icon: "info",
-                        title: "Unfortunately we don't have Enough Food",
-                        text: `Please enter a valid quantity (1-${food.foodQuantity})`,
+                        title: "Invalid Request",
+                        text: `Please enter a valid quantity between 1 and ${food.foodQuantity}.`,
                         showConfirmButton: false,
                         timer: 3000,
                       }).then(() => {
@@ -271,17 +277,75 @@ const FoodDetails = () => {
                       return;
                     }
 
-                    console.log("Request submitted", {
-                      quantity: qty,
-                      notes: document.getElementById("requestNotes").value,
-                      user: {
-                        name: user?.displayName,
-                        email: user?.email,
-                        photo: user?.photoURL,
+                    const requestData = {
+                      requestedQuantity: qty,
+                      notes: notes,
+                      pickupLocation: food.pickupLocation,
+                      expiredDate: food.expiredDate,
+                      requestedUser: {
+                        name: user?.displayName || "N/A",
+                        email: user?.email || "N/A",
+                        photoURL: user?.photoURL || "N/A",
                       },
-                    });
+                      requestedFood: {
+                        name: food.foodName,
+                        image: food.foodImage,
+                        id: food._id,
+                      },
+                    };
 
                     modal.close();
+
+                    try {
+                      // First check if the user already requested this food
+                      const { data } = await axios.get(
+                        `http://localhost:3000/requestedFood?email=${user?.email}`
+                      );
+
+                      const alreadyRequested = data.some(
+                        (req) => req.requestedFood.id === food._id
+                      );
+
+                      if (alreadyRequested) {
+                        Swal.fire({
+                          position: "center",
+                          icon: "warning",
+                          title: "Duplicate Request, You have already requested this food item.",
+                          text: "Please receive previous requested food and update your food request status then you can request again",
+                          showConfirmButton: true,
+                        });
+                        navigate('/myFoodRequest')
+                        return;
+                      }
+
+                      // Proceed to send request
+                      const res = await axios.post(
+                        "http://localhost:3000/requestedFood",
+                        requestData
+                      );
+
+                      if (res.data.insertedId) {
+                        Swal.fire({
+                          position: "center",
+                          icon: "success",
+                          title: "Requested food successfully",
+                          text: "You can request other items too.",
+                          showConfirmButton: false,
+                          timer: 3000,
+                        });
+
+                        navigate("/myFoodRequest");
+                      }
+                    } catch (err) {
+                      console.error(err);
+                      Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Error",
+                        text: "Something went wrong while submitting your request.",
+                        showConfirmButton: true,
+                      });
+                    }
                   }}
                 >
                   Submit Request

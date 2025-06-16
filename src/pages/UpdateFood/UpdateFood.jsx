@@ -1,53 +1,43 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLoaderData, useNavigate, useParams } from "react-router";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
+
 
 const UpdateFood = () => {
   const [food, setFood] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const foodInfo = useLoaderData();
-
-
-
- const { user } = use(AuthContext);
   const { id } = useParams();
-const navigate = useNavigate()
+  const navigate = useNavigate();
 
-
-
- useEffect(() => {
-  if (foodInfo && foodInfo.length > 0) {
-    setFood(foodInfo[0]);  // pick first food item
+  useEffect(() => {
+    if (foodInfo) {
+      setFood(foodInfo);
+    } else {
+      setFood(null);
+    }
     setLoading(false);
-  } else {
-    setFood(null);
-    setLoading(false);
-  }
-}, [foodInfo]);
-
+  }, [foodInfo]);
 
   const handleUpdate = (e) => {
     e.preventDefault();
 
-const form = e.target
- const formData = new FormData(form);
-const foodData = Object.fromEntries(formData.entries())
+    const form = e.target;
+    const formData = new FormData(form);
+    const foodData = Object.fromEntries(formData.entries());
 
+    const donor = {
+      donorImage: foodData.donorImage,
+      donorName: foodData.donorName,
+      donorEmail: foodData.donorEmail,
+    };
+    const foodUpdatedData = {
+      donor,
+      ...foodData,
+    };
 
-const donor = {
-    donorImage: foodData.donorImage,
-    donorName: foodData.donorName,
-    donorEmail: foodData.donorEmail
-};
-const foodUpdatedData = {
-    donor,
-...foodData
-}
-
-
-// console.log(foodUpdatedData);
     Swal.fire({
       title: "Do you want to save the changes?",
       showDenyButton: true,
@@ -67,13 +57,14 @@ const foodUpdatedData = {
           .then((data) => {
             if (data.modifiedCount > 0 || data.acknowledged) {
               Swal.fire("Updated!", "", "success");
-              navigate(`/manageMyFoods`)
+              navigate(`/manageMyFoods`);
             } else {
               Swal.fire("No changes were made.", "", "info");
             }
           })
           .catch((err) => {
-            // console.error("Submission error:", err);
+            console.error("Submission error:", err);
+            Swal.fire("Error updating food.", "", "error");
           });
       } else if (result.isDenied) {
         Swal.fire("Changes are not saved", "", "info");
@@ -92,8 +83,7 @@ const foodUpdatedData = {
   if (!food) {
     return <p className="text-center mt-10 text-red-500">Food not found!</p>;
   }
-//  console.log(food);
- 
+
   return (
     <div className="min-h-screen my-7 flex items-center justify-center bg-base-50 px-4 py-10 text-base-content">
       <form
@@ -110,7 +100,6 @@ const foodUpdatedData = {
               type="text"
               name="foodName"
               defaultValue={food.foodName}
-              placeholder="e.g., Ice Cream"
               className="input input-bordered w-full"
               required
             />
@@ -122,7 +111,6 @@ const foodUpdatedData = {
               type="text"
               name="foodImage"
               defaultValue={food.foodImage}
-              placeholder="Image URL"
               className="input input-bordered w-full"
               required
             />
@@ -134,7 +122,6 @@ const foodUpdatedData = {
               type="number"
               name="foodQuantity"
               defaultValue={food.foodQuantity}
-              placeholder="e.g., 10"
               className="input input-bordered w-full"
               required
             />
@@ -146,7 +133,6 @@ const foodUpdatedData = {
               type="text"
               name="pickupLocation"
               defaultValue={food.pickupLocation}
-              placeholder="Location"
               className="input input-bordered w-full"
               required
             />
@@ -179,6 +165,7 @@ const foodUpdatedData = {
               <option value="Appetizer">Appetizer</option>
             </select>
           </div>
+
           <div>
             <label className="block mb-1 font-medium">Food Status</label>
             <select
@@ -187,8 +174,8 @@ const foodUpdatedData = {
               className="select select-bordered w-full"
               required
             >
-              <option defaultValue="available">Available</option>
-              <option defaultValue="unavailable">Unavailable</option>
+              <option value="available">Available</option>
+              <option value="unavailable">Unavailable</option>
             </select>
           </div>
 
@@ -197,17 +184,18 @@ const foodUpdatedData = {
             <input
               type="text"
               name="donorName"
-              defaultValue={food.donor.donorName}
+              defaultValue={food.donor?.donorName}
               readOnly
               className="input input-disabled w-full"
             />
           </div>
+
           <div>
             <label className="block mb-1 font-medium">Donor Image</label>
             <input
               type="text"
               name="donorImage"
-              defaultValue={food.donor.donorImage}
+              defaultValue={food.donor?.donorImage}
               readOnly
               className="input input-disabled w-full"
             />
@@ -218,7 +206,7 @@ const foodUpdatedData = {
             <input
               type="email"
               name="donorEmail"
-              defaultValue={food.donor.donorEmail}
+              defaultValue={food.donor?.donorEmail}
               readOnly
               className="input input-disabled w-full"
             />
@@ -230,7 +218,6 @@ const foodUpdatedData = {
               name="additionalNotes"
               defaultValue={food.additionalNotes}
               rows="4"
-              placeholder="Extra info..."
               className="textarea textarea-bordered w-full resize-none"
               required
             ></textarea>
@@ -238,7 +225,7 @@ const foodUpdatedData = {
         </div>
 
         <button type="submit" className="mt-8 w-full btn btn-primary">
-          Add Food
+          Update Food
         </button>
       </form>
     </div>

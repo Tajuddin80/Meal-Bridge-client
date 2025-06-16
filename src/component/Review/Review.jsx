@@ -119,7 +119,8 @@ const Review = () => {
       <div className="flex items-center justify-center">
         <Link
           to="/"
-          className="text-sm text-base-content opacity-70 hover:underline"
+           onClick={() => window.scrollTo(0, 0)}
+          className="text-sm text-base-content opacity-70  hover:underline"
         >
           Maybe later
         </Link>
