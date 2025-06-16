@@ -6,6 +6,7 @@ import Faq from "../../component/Faq/Faq";
 import Review from "../../component/Review/Review";
 import { useContext } from "react";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
+import MealBridgeBanner from "../../component/Banner/MealBridgeBanner";
 const Home = () => {
   const {user} = useContext(AuthContext)
    const [featuredFood, setFeaturedFood] = useState([]);
@@ -25,9 +26,9 @@ const Home = () => {
 
   return (
     <>
-      <Slider></Slider>
-      
+      <MealBridgeBanner></MealBridgeBanner>
       <FeaturedFoods loading={loading} featuredFood={featuredFood}></FeaturedFoods>
+      <Slider></Slider>
       <Faq></Faq>
 
 {

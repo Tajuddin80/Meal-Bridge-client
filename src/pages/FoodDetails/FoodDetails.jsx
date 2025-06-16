@@ -157,220 +157,218 @@ const FoodDetails = () => {
         </div>
       </motion.div>
 
-<dialog id="request_modal" className="modal">
-  <div className="modal-box w-full max-w-3xl lg:max-w-5xl">
-    <h3 className="font-bold text-2xl text-primary mb-4">
-      Request Food: {food.foodName}
-    </h3>
+      <dialog id="request_modal" className="modal">
+        <div className="modal-box w-full max-w-3xl lg:max-w-5xl">
+          <h3 className="font-bold text-2xl text-primary mb-4">
+            Request Food: {food.foodName}
+          </h3>
 
-    <div className="flex flex-col md:flex-row gap-6">
-      {/* Food image */}
-      <img
-        src={food.foodImage}
-        alt={food.foodName}
-        className="w-full md:w-1/2 rounded shadow"
-      />
-
-      <div className="w-full md:w-1/2 space-y-3">
-        {/* Request quantity */}
-        <div>
-          <label className="label">
-            <span className="label-text font-semibold">
-              Request Quantity (max: {food.foodQuantity})
-            </span>
-          </label>
-          <input
-            type="number"
-            id="requestQty"
-            min="1"
-            className="input input-bordered w-full"
-            placeholder={`Enter up to ${food.foodQuantity}`}
-          />
-        </div>
-
-        {/* Request date */}
-        <div>
-          <label className="label">
-            <span className="label-text font-semibold">Request Date</span>
-          </label>
-          <input
-            type="text"
-            value={new Date().toLocaleString()}
-            disabled
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        {/* User name */}
-        <div>
-          <label className="label">
-            <span className="label-text font-semibold">Your Name</span>
-          </label>
-          <input
-            type="text"
-            value={user?.displayName || ""}
-            disabled
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        {/* User email */}
-        <div>
-          <label className="label">
-            <span className="label-text font-semibold">Your Email</span>
-          </label>
-          <input
-            type="email"
-            value={user?.email || ""}
-            disabled
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        {/* User photo */}
-        {user?.photoURL && (
-          <div className="flex items-center gap-3 mt-2">
+          <div className="flex flex-col md:flex-row gap-6">
+            {/* Food image */}
             <img
-              src={user.photoURL}
-              alt={user.displayName}
-              className="w-12 h-12 rounded-full border shadow"
+              src={food.foodImage}
+              alt={food.foodName}
+              className="w-full md:w-1/2 rounded shadow"
             />
-            <span className="text-sm text-base-content/70">
-              This is your profile photo
-            </span>
+
+            <div className="w-full md:w-1/2 space-y-3">
+              {/* Request quantity */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">
+                    Request Quantity (max: {food.foodQuantity})
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  id="requestQty"
+                  min="1"
+                  className="input input-bordered w-full"
+                  placeholder={`Enter up to ${food.foodQuantity}`}
+                />
+              </div>
+
+              {/* Request date */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">Request Date</span>
+                </label>
+                <input
+                  type="text"
+                  value={new Date().toLocaleString()}
+                  disabled
+                  className="input input-bordered w-full"
+                />
+              </div>
+
+              {/* User name */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">Your Name</span>
+                </label>
+                <input
+                  type="text"
+                  value={user?.displayName || ""}
+                  disabled
+                  className="input input-bordered w-full"
+                />
+              </div>
+
+              {/* User email */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">Your Email</span>
+                </label>
+                <input
+                  type="email"
+                  value={user?.email || ""}
+                  disabled
+                  className="input input-bordered w-full"
+                />
+              </div>
+
+              {/* User photo */}
+              {user?.photoURL && (
+                <div className="flex items-center gap-3 mt-2">
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName}
+                    className="w-12 h-12 rounded-full border shadow"
+                  />
+                  <span className="text-sm text-base-content/70">
+                    This is your profile photo
+                  </span>
+                </div>
+              )}
+
+              {/* Notes */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">
+                    Additional Notes (optional)
+                  </span>
+                </label>
+                <textarea
+                  id="requestNotes"
+                  className="textarea textarea-bordered w-full"
+                  placeholder="Write any additional notes..."
+                ></textarea>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex justify-end gap-3 mt-4">
+                <form method="dialog">
+                  <button className="btn">Close</button>
+                </form>
+                <button
+                  className="btn btn-primary"
+                  onClick={async () => {
+                    const qtyRaw = document.getElementById("requestQty").value;
+                    const qty = parseInt(qtyRaw, 10);
+                    const notes = document.getElementById("requestNotes").value;
+                    const modal = document.getElementById("request_modal");
+                    const requestDate = new Date().toLocaleString();
+
+                    if (
+                      !qtyRaw ||
+                      isNaN(qty) ||
+                      qty < 1 ||
+                      qty > food.foodQuantity
+                    ) {
+                      modal.close();
+
+                      Swal.fire({
+                        position: "center",
+                        icon: "info",
+                        title: "Invalid Request",
+                        text: `Please enter a valid quantity between 1 and ${food.foodQuantity}.`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                      }).then(() => {
+                        modal.showModal();
+                      });
+
+                      return;
+                    }
+
+                    const requestData = {
+                      requestedQuantity: qty,
+                      notes: notes,
+                      requestDate: requestDate,
+                      pickupLocation: food.pickupLocation,
+                      expiredDate: food.expiredDate,
+                      requestedUser: {
+                        name: user?.displayName || "N/A",
+                        email: user?.email || "N/A",
+                        photoURL: user?.photoURL || "N/A",
+                      },
+                      requestedFood: {
+                        name: food.foodName,
+                        image: food.foodImage,
+                        id: food._id,
+                      },
+                    };
+
+                    modal.close();
+
+                    try {
+                      const { data } = await axios.get(
+                        `http://localhost:3000/requestedFood?email=${user?.email}`
+                      );
+
+                      const alreadyRequested = data.some(
+                        (req) => req.requestedFood.id === food._id
+                      );
+
+                      if (alreadyRequested) {
+                        Swal.fire({
+                          position: "center",
+                          icon: "warning",
+                          title:
+                            "Duplicate Request, You have already requested this food item.",
+                          text: "Please receive previous requested food and update your food request status then you can request again",
+                          showConfirmButton: true,
+                        });
+                        navigate("/myFoodRequest");
+                        return;
+                      }
+
+                      const res = await axios.post(
+                        "http://localhost:3000/requestedFood",
+                        requestData
+                      );
+
+                      if (res.data.insertedId) {
+                        Swal.fire({
+                          position: "center",
+                          icon: "success",
+                          title: "Requested food successfully",
+                          text: "You can request other items too.",
+                          showConfirmButton: false,
+                          timer: 3000,
+                        });
+
+                        navigate("/myFoodRequest");
+                      }
+                    } catch (err) {
+                      console.error(err);
+                      Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Error",
+                        text: "Something went wrong while submitting your request.",
+                        showConfirmButton: true,
+                      });
+                    }
+                  }}
+                >
+                  Submit Request
+                </button>
+              </div>
+            </div>
           </div>
-        )}
-
-        {/* Notes */}
-        <div>
-          <label className="label">
-            <span className="label-text font-semibold">
-              Additional Notes (optional)
-            </span>
-          </label>
-          <textarea
-            id="requestNotes"
-            className="textarea textarea-bordered w-full"
-            placeholder="Write any additional notes..."
-          ></textarea>
         </div>
-
-        {/* Action buttons */}
-        <div className="flex justify-end gap-3 mt-4">
-          <form method="dialog">
-            <button className="btn">Close</button>
-          </form>
-          <button
-            className="btn btn-primary"
-            onClick={async () => {
-              const qtyRaw = document.getElementById("requestQty").value;
-              const qty = parseInt(qtyRaw, 10);
-              const notes = document.getElementById("requestNotes").value;
-              const modal = document.getElementById("request_modal");
-              const requestDate = new Date().toLocaleString();
-
-              if (
-                !qtyRaw ||
-                isNaN(qty) ||
-                qty < 1 ||
-                qty > food.foodQuantity
-              ) {
-                modal.close();
-
-                Swal.fire({
-                  position: "center",
-                  icon: "info",
-                  title: "Invalid Request",
-                  text: `Please enter a valid quantity between 1 and ${food.foodQuantity}.`,
-                  showConfirmButton: false,
-                  timer: 3000,
-                }).then(() => {
-                  modal.showModal();
-                });
-
-                return;
-              }
-
-              const requestData = {
-                requestedQuantity: qty,
-                notes: notes,
-                requestDate: requestDate,
-                pickupLocation: food.pickupLocation,
-                expiredDate: food.expiredDate,
-                requestedUser: {
-                  name: user?.displayName || "N/A",
-                  email: user?.email || "N/A",
-                  photoURL: user?.photoURL || "N/A",
-                },
-                requestedFood: {
-                  name: food.foodName,
-                  image: food.foodImage,
-                  id: food._id,
-                },
-              };
-
-              modal.close();
-
-              try {
-                const { data } = await axios.get(
-                  `http://localhost:3000/requestedFood?email=${user?.email}`
-                );
-
-                const alreadyRequested = data.some(
-                  (req) => req.requestedFood.id === food._id
-                );
-
-                if (alreadyRequested) {
-                  Swal.fire({
-                    position: "center",
-                    icon: "warning",
-                    title:
-                      "Duplicate Request, You have already requested this food item.",
-                    text: "Please receive previous requested food and update your food request status then you can request again",
-                    showConfirmButton: true,
-                  });
-                  navigate("/myFoodRequest");
-                  return;
-                }
-
-                const res = await axios.post(
-                  "http://localhost:3000/requestedFood",
-                  requestData
-                );
-
-                if (res.data.insertedId) {
-                  Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: "Requested food successfully",
-                    text: "You can request other items too.",
-                    showConfirmButton: false,
-                    timer: 3000,
-                  });
-
-                  navigate("/myFoodRequest");
-                }
-              } catch (err) {
-                console.error(err);
-                Swal.fire({
-                  position: "center",
-                  icon: "error",
-                  title: "Error",
-                  text: "Something went wrong while submitting your request.",
-                  showConfirmButton: true,
-                });
-              }
-            }}
-          >
-            Submit Request
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</dialog>
-
-
+      </dialog>
     </>
   );
 };
