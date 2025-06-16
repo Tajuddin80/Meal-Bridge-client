@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import Swal from 'sweetalert2';
 
 const MyFoodRequestSingleCard = ({ food, onRemove }) => {
-  const [status, setStatus] = useState(food.status || "Pending");
+  const [status, setStatus] = useState(food.status || "requested");
   const [disabled, setDisabled] = useState(food.status === "Received");
 
   const handleChange = (e) => {
@@ -77,7 +77,7 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
             });
 
         } else {
-          setStatus("Pending");
+          setStatus("requested");
         }
       });
     } else {
@@ -110,7 +110,7 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
       disabled={disabled}
       onChange={handleChange}
     >
-      <option value="Pending">Pending</option>
+      <option value="requested">requested</option>
       <option value="Received">Received</option>
     </select>
   </td>

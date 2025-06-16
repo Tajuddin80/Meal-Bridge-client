@@ -1,6 +1,6 @@
+import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
-import React from "react";
 
 const FoodCard = ({ food, loading }) => {
   return (
@@ -22,7 +22,7 @@ const FoodCard = ({ food, loading }) => {
             <img
               src={food.foodImage}
               alt={food.foodName}
-              className="rounded-xl object-cover max-h-48"
+              className="rounded-xl object-cover w-full max-h-48"
             />
           </figure>
           <div className="card-body items-center text-center text-base-content">
@@ -34,13 +34,16 @@ const FoodCard = ({ food, loading }) => {
               <span className="font-normal">{food.category}</span>
             </p>
             <p className="text-sm font-medium">
-              Quantity: <span className="font-normal">{food.foodQuantity}</span>
+              Quantity:{" "}
+              <span className="font-normal">{food.foodQuantity}</span>
             </p>
             <p className="text-sm font-medium">
-              Pickup: <span className="font-normal">{food.pickupLocation}</span>
+              Pickup:{" "}
+              <span className="font-normal">{food.pickupLocation}</span>
             </p>
             <p className="text-sm font-semibold text-error">
-              Expires: <span className="font-normal">{food.expiredDate}</span>
+              Expires:{" "}
+              <span className="font-normal">{food.expiredDate}</span>
             </p>
 
             <div className="w-full mt-4">

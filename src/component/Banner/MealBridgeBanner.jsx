@@ -21,7 +21,7 @@ const MealBridgeBanner = () => {
           transition={{ duration: 1 }}
           className="text-3xl sm:text-4xl md:text-5xl font-extrabold"
         >
-          Welcome to <span className="text-primary">Meal</span>
+          Welcome to <span className="text-primary">Meal </span>
           <span className="text-secondary">Bridge</span>
         </motion.h1>
 
