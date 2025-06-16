@@ -1,12 +1,11 @@
 # 🍽️ MealBridge
 
-**MealBridge** is a web platform that connects food donors with people in need. The app enables donors to share surplus food and allows receivers to request available items easily.
 
 ---
 
 ## 🌟 Purpose
 
-The purpose of MealBridge is to reduce food waste by bridging the gap between donors and receivers through a secure, user-friendly web application.
+
 
 ---
 
