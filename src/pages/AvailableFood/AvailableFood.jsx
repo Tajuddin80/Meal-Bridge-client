@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import SignleFood from "./SignleFood";
 import FoodCard from "../../component/FeaturedFoods/FoodCard";
 
-// Assume you have a UserContext or AuthContext providing current user info
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 
 const fetchFoods = async () => {
@@ -18,13 +17,40 @@ const AvailableFood = () => {
   const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
 
-  console.log(user);
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortOrder, setSortOrder] = useState("none");
-  const [searchText, setSearchText] = useState("");
-  const [viewType, setViewType] = useState("table");
+  // On first load, try to get saved filters & viewType from localStorage
+  const getSavedState = (key, defaultValue) => {
+    try {
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : defaultValue;
+    } catch {
+      return defaultValue;
+    }
+  };
 
-  // Fetch foods using TanStack Query
+  const [selectedCategory, setSelectedCategory] = useState(() =>
+    getSavedState("availableFood_category", "all")
+  );
+  const [sortOrder, setSortOrder] = useState(() =>
+    getSavedState("availableFood_sortOrder", "none")
+  );
+  const [viewType, setViewType] = useState(() =>
+    getSavedState("availableFood_viewType", "table")
+  );
+  const [searchText, setSearchText] = useState("");
+
+  // Save filters & viewType to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("availableFood_category", JSON.stringify(selectedCategory));
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    localStorage.setItem("availableFood_sortOrder", JSON.stringify(sortOrder));
+  }, [sortOrder]);
+
+  useEffect(() => {
+    localStorage.setItem("availableFood_viewType", JSON.stringify(viewType));
+  }, [viewType]);
+
   const {
     data: allFoods = [],
     isLoading,
@@ -35,7 +61,6 @@ const AvailableFood = () => {
     queryFn: fetchFoods,
   });
 
-  // Mutation for adding new food
   const addFoodMutation = useMutation({
     mutationFn: (newFood) =>
       axios.post("http://localhost:3000/addfood", newFood),
@@ -46,7 +71,6 @@ const AvailableFood = () => {
         icon: "success",
         title: "Demo food added, check at the end of this page",
         showConfirmButton: true,
-        // timer: 1500
       });
     },
     onError: () => {
@@ -62,7 +86,6 @@ const AvailableFood = () => {
     },
   });
 
-  // Handler to add demo food
   const handleAddFood = () => {
     if (!user) {
       Swal.fire({
@@ -96,7 +119,6 @@ const AvailableFood = () => {
     addFoodMutation.mutate(newFood);
   };
 
-  // Filter, sort, and search combined logic
   const filteredFoods = allFoods
     .filter((food) =>
       selectedCategory === "all"
@@ -123,7 +145,6 @@ const AvailableFood = () => {
 
   return (
     <div className="overflow-x-auto">
-      {/* Filters and Controls */}
       <div className="w-[95vw] mx-auto mt-10 mb-4 flex flex-wrap justify-center gap-4">
         <input
           type="text"
@@ -174,7 +195,6 @@ const AvailableFood = () => {
         </button>
       </div>
 
-      {/* Loading */}
       {isLoading ? (
         <div className="flex justify-center items-center py-10">
           <span className="loading loading-spinner loading-lg"></span>

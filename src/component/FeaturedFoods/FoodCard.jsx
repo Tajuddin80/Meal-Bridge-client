@@ -30,20 +30,16 @@ const FoodCard = ({ food, loading }) => {
               {food.foodName}
             </h2>
             <p className="text-base font-semibold">
-              Category:{" "}
-              <span className="font-normal">{food.category}</span>
+              Category: <span className="font-normal">{food.category}</span>
             </p>
             <p className="text-sm font-medium">
-              Quantity:{" "}
-              <span className="font-normal">{food.foodQuantity}</span>
+              Quantity: <span className="font-normal">{food.foodQuantity}</span>
             </p>
             <p className="text-sm font-medium">
-              Pickup:{" "}
-              <span className="font-normal">{food.pickupLocation}</span>
+              Pickup: <span className="font-normal">{food.pickupLocation}</span>
             </p>
             <p className="text-sm font-semibold text-error">
-              Expires:{" "}
-              <span className="font-normal">{food.expiredDate}</span>
+              Expires: <span className="font-normal">{food.expiredDate}</span>
             </p>
 
             <div className="w-full mt-4">
