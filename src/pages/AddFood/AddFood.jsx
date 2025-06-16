@@ -38,15 +38,25 @@ const AddFood = () => {
       additionalNotes: foodDetails.additionalNotes,
       foodStatus: foodDetails.foodStatus,
       category: foodDetails.category,
-      donor: {
-        donorName: formData.donorName,
-        donorEmail: formData.donorEmail,
-        donorImage: formData.donorImage,
-      },
+      // No need to send donor info; backend will handle from token
     };
-   
+
+    if (!user?.accessToken) {
+      console.error("No access token found. Please log in again.");
+      Swal.fire({
+        icon: "error",
+        title: "Authentication Error",
+        text: "Please log in again to add food.",
+      });
+      return;
+    }
+
     axios
-      .post("http://localhost:3000/addFood", fullData)
+      .post("http://localhost:3000/addFood", fullData, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      })
       .then((res) => {
         if (res.data.insertedId) {
           Swal.fire({
@@ -60,8 +70,16 @@ const AddFood = () => {
           navigate(`/manageMyFoods`);
         }
       })
-      .catch((err) => console.error("Submission error:", err));
+      .catch((err) => {
+        console.error("Submission error:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Submission Failed",
+          text: "There was an error adding the food item.",
+        });
+      });
   };
+
 
   return (
     <div className="min-h-screen my-7 flex items-center justify-center bg-base-50 px-4 py-10 text-base-content">

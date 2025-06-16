@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useLoaderData, useNavigate, useParams } from "react-router";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
-
 
 const UpdateFood = () => {
   const [food, setFood] = useState(null);
@@ -11,6 +10,7 @@ const UpdateFood = () => {
   const foodInfo = useLoaderData();
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     if (foodInfo) {
@@ -21,22 +21,17 @@ const UpdateFood = () => {
     setLoading(false);
   }, [foodInfo]);
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
 
     const form = e.target;
     const formData = new FormData(form);
     const foodData = Object.fromEntries(formData.entries());
 
-    const donor = {
-      donorImage: foodData.donorImage,
-      donorName: foodData.donorName,
-      donorEmail: foodData.donorEmail,
-    };
-    const foodUpdatedData = {
-      donor,
-      ...foodData,
-    };
+    // Remove donor fields so they aren’t sent (they will be checked by server)
+    delete foodData.donorName;
+    delete foodData.donorImage;
+    delete foodData.donorEmail;
 
     Swal.fire({
       title: "Do you want to save the changes?",
@@ -44,28 +39,32 @@ const UpdateFood = () => {
       showCancelButton: true,
       confirmButtonText: "Save",
       denyButtonText: `Don't save`,
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:3000/updateFood/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(foodUpdatedData),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.modifiedCount > 0 || data.acknowledged) {
-              Swal.fire("Updated!", "", "success");
-              navigate(`/manageMyFoods`);
-            } else {
-              Swal.fire("No changes were made.", "", "info");
-            }
-          })
-          .catch((err) => {
-            console.error("Submission error:", err);
-            Swal.fire("Error updating food.", "", "error");
+        try {
+          const token = await user.getIdToken();
+
+          const res = await fetch(`http://localhost:3000/updateFood/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(foodData),
           });
+
+          const data = await res.json();
+
+          if (data.modifiedCount > 0 || data.acknowledged) {
+            Swal.fire("Updated!", "", "success");
+            navigate(`/manageMyFoods`);
+          } else {
+            Swal.fire("No changes were made.", "", "info");
+          }
+        } catch (err) {
+          console.error("Submission error:", err);
+          Swal.fire("Error updating food.", "", "error");
+        }
       } else if (result.isDenied) {
         Swal.fire("Changes are not saved", "", "info");
       }

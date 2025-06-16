@@ -54,7 +54,14 @@ const AvailableFood = () => {
   });
 
   const addFoodMutation = useMutation({
-    mutationFn: (newFood) => axios.post("http://localhost:3000/addfood", newFood),
+    mutationFn: async (newFood) => {
+      const token = await user.getIdToken();
+      return axios.post("http://localhost:3000/addfood", newFood, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["allFoods"]);
       Swal.fire({
@@ -63,10 +70,12 @@ const AvailableFood = () => {
         text: "Check at the end of this page",
       });
     },
-    onError: () => {
+    onError: (err) => {
+      console.error("Add food failed:", err);
       Swal.fire({
         icon: "error",
         title: "Failed to add sample food",
+        text: err.response?.data?.message || "Unknown error",
         toast: true,
         timer: 2500,
         showConfirmButton: false,
@@ -108,8 +117,9 @@ const AvailableFood = () => {
 
   const filteredFoods = allFoods
     .filter((food) =>
-      selectedCategory === "all" ? true :
-        food.category?.toLowerCase() === selectedCategory.toLowerCase()
+      selectedCategory === "all"
+        ? true
+        : food.category?.toLowerCase() === selectedCategory.toLowerCase()
     )
     .filter((food) =>
       food.foodName.toLowerCase().includes(searchText.toLowerCase())
@@ -122,9 +132,12 @@ const AvailableFood = () => {
     });
 
   if (isError) {
-    return <div className="text-center text-error py-10">Error loading foods: {error.message}</div>;
+    return (
+      <div className="text-center text-error py-10">
+        Error loading foods: {error.message}
+      </div>
+    );
   }
-
   return (
     <div className="overflow-x-auto">
       <div className="w-[95vw] mx-auto mt-10 mb-4 flex flex-wrap justify-center gap-4">
