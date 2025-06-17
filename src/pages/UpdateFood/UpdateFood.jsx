@@ -21,7 +21,6 @@ const UpdateFood = () => {
     }
     setLoading(false);
   }, [foodInfo]);
-
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -29,7 +28,10 @@ const UpdateFood = () => {
     const formData = new FormData(form);
     const foodData = Object.fromEntries(formData.entries());
 
-    // Remove donor fields so they aren’t sent (they will be checked by server)
+    // Convert foodQuantity to number
+    foodData.foodQuantity = Number(foodData.foodQuantity);
+
+    // Remove donor fields so they aren’t sent
     delete foodData.donorName;
     delete foodData.donorImage;
     delete foodData.donorEmail;

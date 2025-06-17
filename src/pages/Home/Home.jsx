@@ -22,6 +22,7 @@ const Home = () => {
       })
       .catch((err) => console.error("Error fetching featured food:", err));
   }, []);
+// console.log(featuredFood);
 
   return (
     <>

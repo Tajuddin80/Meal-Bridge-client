@@ -112,7 +112,7 @@ const AvailableFood = () => {
     }
 
     const newFood = {
-      foodName: "Test Soup",
+      foodName: "Test Soup added using tanstack",
       foodImage: "https://i.ibb.co/xKxr4JKD/soup2.jpg",
       foodQuantity: 20,
       pickupLocation: "Banani, Dhaka",
