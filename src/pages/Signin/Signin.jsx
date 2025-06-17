@@ -39,7 +39,7 @@ const Signin = () => {
 
       if (user) {
         // Get all users from your DB
-        const res = await axios.get("http://localhost:3000/users");
+        const res = await axios.get("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/users");
         const usersList = res.data;
 
         // Check if email exists
@@ -62,7 +62,7 @@ const Signin = () => {
             email: user?.email,
           };
 
-          const saveRes = await fetch("http://localhost:3000/adduser", {
+          const saveRes = await fetch("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/adduser", {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(userInfo),
@@ -119,7 +119,7 @@ const Signin = () => {
       };
 
       // Fetch existing users
-      const usersRes = await axios.get("http://localhost:3000/users");
+      const usersRes = await axios.get("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/users");
       const usersData = usersRes.data;
       const emailExists = usersData.some((u) => u.email === user?.email);
 
@@ -137,7 +137,7 @@ const Signin = () => {
       }
 
       // If not exists, insert
-      const saveRes = await fetch("http://localhost:3000/adduser", {
+      const saveRes = await fetch("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/adduser", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(userInfo),

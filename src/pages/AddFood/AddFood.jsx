@@ -52,7 +52,7 @@ const AddFood = () => {
     }
 
     axios
-      .post("http://localhost:3000/addFood", fullData, {
+      .post("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/addFood", fullData, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },

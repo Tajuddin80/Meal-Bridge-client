@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const fetchMyFoodsApi = (accessToken) => {
   return axios
-    .get(`http://localhost:3000/myfoods`, {
+    .get(`https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/myfoods`, {
       headers: {
         authorization: `Bearer ${accessToken}`,
       },

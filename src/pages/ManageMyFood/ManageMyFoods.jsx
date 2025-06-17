@@ -53,7 +53,7 @@ const handleDelete = (id) => {
 
         const token = await user.getIdToken();
 
-        const response = await fetch(`http://localhost:3000/allfoods/${id}`, {
+        const response = await fetch(`https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allfoods/${id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

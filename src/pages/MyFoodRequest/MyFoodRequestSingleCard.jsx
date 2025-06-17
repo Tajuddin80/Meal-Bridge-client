@@ -35,10 +35,10 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
 
         // Fetch food data and current requests
         const [foodRes, requestsRes] = await Promise.all([
-          axios.get(`http://localhost:3000/allFoods/${foodId}`, {
+          axios.get(`https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allFoods/${foodId}`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get(`http://localhost:3000/requestedFood`, {
+          axios.get(`https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/requestedFood`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -63,14 +63,14 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
 
         // Step 1: Update food quantity
         await axios.patch(
-          `http://localhost:3000/updateFoodAmount/${foodId}`,
+          `https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/updateFoodAmount/${foodId}`,
           { foodQuantity: updatedQuantity },
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         // Step 2: Delete the request
         await axios.delete(
-          `http://localhost:3000/requestedFood/${food._id}`,
+          `https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/requestedFood/${food._id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

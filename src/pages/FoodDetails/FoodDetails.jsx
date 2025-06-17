@@ -17,7 +17,7 @@ const FoodDetails = () => {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `http://localhost:3000/allFoods/${id}`
+          `https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allFoods/${id}`
         );
         setFood(data);
       } catch (err) {
@@ -104,7 +104,7 @@ const FoodDetails = () => {
 
     try {
       const token = await user.getIdToken(); // get fresh Firebase token
-      const { data } = await axios.get(`http://localhost:3000/requestedFood`, {
+      const { data } = await axios.get(`https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/requestedFood`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -125,7 +125,7 @@ const FoodDetails = () => {
       }
 
   const res = await axios.post(
-  `http://localhost:3000/requestedFood`,
+  `https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/requestedFood`,
   requestData,
   {
     headers: {

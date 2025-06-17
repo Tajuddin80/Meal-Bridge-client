@@ -14,7 +14,7 @@ const Home = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://localhost:3000/featuredfood")
+      .get("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/featuredfood")
       .then((res) => {
         setFeaturedFood(res.data);
         setLoading(false);

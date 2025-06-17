@@ -8,7 +8,7 @@ import FoodCard from "../../component/FeaturedFoods/FoodCard";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 
 const fetchFoods = async () => {
-  const { data } = await axios.get("http://localhost:3000/allfoods");
+  const { data } = await axios.get("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allfoods");
   return data;
 };
 
@@ -64,7 +64,7 @@ const AvailableFood = () => {
   const addFoodMutation = useMutation({
     mutationFn: async (newFood) => {
       const token = await user.getIdToken();
-      return axios.post("http://localhost:3000/addfood", newFood, {
+      return axios.post("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/addfood", newFood, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

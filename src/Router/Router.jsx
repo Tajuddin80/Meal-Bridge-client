@@ -12,6 +12,7 @@ import ManageMyFoods from "../pages/ManageMyFood/ManageMyFoods";
 import FoodDetails from "../pages/FoodDetails/FoodDetails";
 import UpdateFood from "../pages/UpdateFood/UpdateFood";
 import MyFoodRequest from "../pages/MyFoodRequest/MyFoodRequest";
+import PublicRoute from "../component/PublicRoute";
 
 export const router = createBrowserRouter([
   {
@@ -24,16 +25,25 @@ export const router = createBrowserRouter([
         element: <Home />,
         errorElement: <Error404 />,
       },
-      {
-        path: "signin",
-        element: <Signin></Signin>,
-        errorElement: <Error404 />,
-      },
-      {
-        path: "signup",
-        element: <Signup></Signup>,
-        errorElement: <Error404 />,
-      },
+   {
+  path: "signin",
+  element: (
+    <PublicRoute>
+      <Signin />
+    </PublicRoute>
+  ),
+  errorElement: <Error404 />,
+},
+{
+  path: "signup",
+  element: (
+    <PublicRoute>
+      <Signup />
+    </PublicRoute>
+  ),
+  errorElement: <Error404 />,
+},
+
       {
         path: "aboutUs",
         element: <About></About>,
@@ -54,7 +64,7 @@ export const router = createBrowserRouter([
         ),
         loader: async ({ params }) => {
           const res = await fetch(
-            `http://localhost:3000/allFoods/${params.id}`
+            `https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allFoods/${params.id}`
           );
           if (!res.ok) throw new Response("Not Found", { status: 404 });
           return res.json();

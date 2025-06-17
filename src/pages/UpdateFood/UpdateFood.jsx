@@ -44,7 +44,7 @@ const UpdateFood = () => {
         try {
           const token = await user.getIdToken();
 
-          const res = await fetch(`http://localhost:3000/updateFood/${id}`, {
+          const res = await fetch(`https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/updateFood/${id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
