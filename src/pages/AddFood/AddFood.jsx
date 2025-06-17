@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const AddFood = () => {
   const { user } = useContext(AuthContext);
@@ -52,7 +53,7 @@ const AddFood = () => {
     }
 
     axios
-      .post("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/addFood", fullData, {
+      .post("https://meal-bridge-server-one.vercel.app/addFood", fullData, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },
@@ -82,6 +83,9 @@ const AddFood = () => {
 
   return (
     <div className="min-h-screen my-7 flex items-center justify-center bg-base-50 px-4 py-10 text-base-content">
+      <Helmet>
+        <title>Meal Bridge || Add Food</title>
+      </Helmet>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-5xl bg-base-100 shadow-md rounded-lg p-8"

@@ -6,6 +6,7 @@ import { updateProfile } from "firebase/auth";
 import { Eye, EyeOff } from "lucide-react";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const Signup = () => {
   const [error, setError] = useState("");
@@ -49,7 +50,9 @@ const Signup = () => {
 
     try {
       // Check if user email already exists in DB
-      const usersRes = await axios.get("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/users");
+      const usersRes = await axios.get(
+        "https://meal-bridge-server-one.vercel.app/users"
+      );
       const usersData = usersRes.data;
 
       const emailExists = usersData.some((u) => u.email === email);
@@ -75,11 +78,14 @@ const Signup = () => {
 
       // Save user to DB
       const userInfo = { name, photo: photourl, email };
-      const saveRes = await fetch("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/adduser", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(userInfo),
-      });
+      const saveRes = await fetch(
+        "https://meal-bridge-server-one.vercel.app/adduser",
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(userInfo),
+        }
+      );
       const saveData = await saveRes.json();
 
       if (saveData.insertedId) {
@@ -122,7 +128,9 @@ const Signup = () => {
       };
 
       // Fetch existing users
-      const usersRes = await axios.get("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/users");
+      const usersRes = await axios.get(
+        "https://meal-bridge-server-one.vercel.app/users"
+      );
       const usersData = usersRes.data;
       const emailExists = usersData.some((u) => u.email === user?.email);
 
@@ -140,11 +148,14 @@ const Signup = () => {
       }
 
       // If not exists, insert
-      const saveRes = await fetch("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/adduser", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(userInfo),
-      });
+      const saveRes = await fetch(
+        "https://meal-bridge-server-one.vercel.app/adduser",
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(userInfo),
+        }
+      );
       const saveData = await saveRes.json();
 
       if (saveData.insertedId) {
@@ -173,9 +184,9 @@ const Signup = () => {
 
   return (
     <div className="mx-auto max-w-md p-4 my-20 rounded-md shadow sm:p-8 bg-base-100 text-base-content">
-      {/* <Helmet>
-                <title>Plant Book 🌱 Register</title>
-            </Helmet> */}
+      <Helmet>
+        <title>Meal Bridge || Register</title>
+      </Helmet>
       <h2 className="mb-3 text-3xl font-semibold text-center">
         Register your account
       </h2>

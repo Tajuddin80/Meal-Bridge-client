@@ -4,9 +4,13 @@ import animation from "../../assets/delivery.json";
 import { Typewriter } from "react-simple-typewriter";
 import { Autoplay } from "swiper/modules";
 import ReviewSection from "./ReviewSection/ReviewSection";
+import { Helmet } from "react-helmet";
 const About = () => {
   return (
     <>
+      <Helmet>
+        <title>Meal Bridge || About</title>
+      </Helmet>
       <div className="min-h-screen bg-base-100 flex flex-col justify-center items-center px-4 py-10">
         <div className="max-w-4xl w-full flex flex-col gap-8 items-center">
           {/* Image at the top */}

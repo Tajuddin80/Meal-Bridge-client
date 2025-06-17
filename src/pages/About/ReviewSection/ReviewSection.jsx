@@ -8,7 +8,7 @@ const ReviewSection = () => {
   const [reviews, setReviews] = useState([]);
   useEffect(() => {
     axios
-      .get("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allreviews")
+      .get("https://meal-bridge-server-one.vercel.app/allreviews")
       .then((res) => {
         setReviews(res.data);
       })

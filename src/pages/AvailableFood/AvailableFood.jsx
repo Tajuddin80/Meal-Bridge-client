@@ -6,9 +6,12 @@ import Swal from "sweetalert2";
 import SignleFood from "./SignleFood";
 import FoodCard from "../../component/FeaturedFoods/FoodCard";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
+import { Helmet } from "react-helmet";
 
 const fetchFoods = async () => {
-  const { data } = await axios.get("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allfoods");
+  const { data } = await axios.get(
+    "https://meal-bridge-server-one.vercel.app/allfoods"
+  );
   return data;
 };
 
@@ -64,11 +67,15 @@ const AvailableFood = () => {
   const addFoodMutation = useMutation({
     mutationFn: async (newFood) => {
       const token = await user.getIdToken();
-      return axios.post("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/addfood", newFood, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      return axios.post(
+        "https://meal-bridge-server-one.vercel.app/addfood",
+        newFood,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["allFoods"]);
@@ -148,6 +155,9 @@ const AvailableFood = () => {
   }
   return (
     <div className="overflow-x-auto">
+      <Helmet>
+        <title>Meal Bridge || Available Food</title>
+      </Helmet>
       <div className="w-[95vw] mx-auto mt-10 mb-4 flex flex-wrap justify-center gap-4">
         <input
           type="text"

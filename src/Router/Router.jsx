@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
         ),
         loader: async ({ params }) => {
           const res = await fetch(
-            `https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allFoods/${params.id}`
+            `https://meal-bridge-server-one.vercel.app/allFoods/${params.id}`
           );
           if (!res.ok) throw new Response("Not Found", { status: 404 });
           return res.json();

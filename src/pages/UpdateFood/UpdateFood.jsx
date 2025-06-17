@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useLoaderData, useNavigate, useParams } from "react-router";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
+import { Helmet } from "react-helmet";
 
 const UpdateFood = () => {
   const [food, setFood] = useState(null);
@@ -44,14 +45,17 @@ const UpdateFood = () => {
         try {
           const token = await user.getIdToken();
 
-          const res = await fetch(`https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/updateFood/${id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(foodData),
-          });
+          const res = await fetch(
+            `https://meal-bridge-server-one.vercel.app/updateFood/${id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(foodData),
+            }
+          );
 
           const data = await res.json();
 
@@ -85,6 +89,9 @@ const UpdateFood = () => {
 
   return (
     <div className="min-h-screen my-7 flex items-center justify-center bg-base-50 px-4 py-10 text-base-content">
+      <Helmet>
+        <title>Meal Bridge || Update Food</title>
+      </Helmet>
       <form
         onSubmit={handleUpdate}
         className="w-full max-w-5xl bg-base-100 shadow-md rounded-lg p-8"

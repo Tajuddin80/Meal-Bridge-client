@@ -4,6 +4,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
+import { Helmet } from "react-helmet";
 
 const FoodDetails = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const FoodDetails = () => {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allFoods/${id}`
+          `https://meal-bridge-server-one.vercel.app/allFoods/${id}`
         );
         setFood(data);
       } catch (err) {
@@ -104,9 +105,12 @@ const FoodDetails = () => {
 
     try {
       const token = await user.getIdToken(); // get fresh Firebase token
-      const { data } = await axios.get(`https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/requestedFood`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await axios.get(
+        `https://meal-bridge-server-one.vercel.app/requestedFood`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       const alreadyRequested = data.some(
         (req) => req.requestedFood.id === food._id
@@ -124,15 +128,15 @@ const FoodDetails = () => {
         return;
       }
 
-  const res = await axios.post(
-  `https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/requestedFood`,
-  requestData,
-  {
-    headers: {
-      Authorization: `Bearer ${token}`, 
-    },
-  }
-);
+      const res = await axios.post(
+        `https://meal-bridge-server-one.vercel.app/requestedFood`,
+        requestData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (res.data.insertedId) {
         Swal.fire({
@@ -159,6 +163,9 @@ const FoodDetails = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Meal Bridge || Details</title>
+      </Helmet>
       <motion.div
         className="max-w-4xl mx-auto my-10 p-6 bg-base-100 shadow-lg rounded-lg border border-base-300"
         initial={{ opacity: 0, y: 50 }}

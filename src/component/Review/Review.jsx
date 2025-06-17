@@ -33,7 +33,7 @@ const Review = () => {
     };
 
     axios
-      .post("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/addreviews", userInfo)
+      .post("https://meal-bridge-server-one.vercel.app/addreviews", userInfo)
       .then((res) => {
         if (res.data.insertedId) {
           Swal.fire({

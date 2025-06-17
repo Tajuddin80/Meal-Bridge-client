@@ -4,6 +4,7 @@ import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import MyAddedSignleFood from "./MyAddedSignleFood";
 import Swal from "sweetalert2";
 import { fetchMyFoodsApi } from "../../api/fetchMyFoodsApi";
+import { Helmet } from "react-helmet";
 
 const ManageMyFoods = () => {
   // const [myAddedFoods, setMyAddedFoods] = useState([])
@@ -30,76 +31,82 @@ const ManageMyFoods = () => {
     fetchMyFoods();
   }, [user]);
 
-const handleDelete = (id) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        if (!user) {
-          Swal.fire({
-            icon: "error",
-            title: "Not authenticated!",
-            text: "Please login first.",
-          });
-          return;
-        }
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          if (!user) {
+            Swal.fire({
+              icon: "error",
+              title: "Not authenticated!",
+              text: "Please login first.",
+            });
+            return;
+          }
 
-        const token = await user.getIdToken();
+          const token = await user.getIdToken();
 
-        const response = await fetch(`https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/allfoods/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+          const response = await fetch(
+            `https://meal-bridge-server-one.vercel.app/allfoods/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-        const data = await response.json();
+          const data = await response.json();
 
-        if (response.ok && data.deletedCount > 0) {
+          if (response.ok && data.deletedCount > 0) {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Your food has been deleted",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+
+            setFoods((prevFoods) =>
+              prevFoods.filter((food) => food._id !== id)
+            );
+          } else {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: data.message || "Deletion failed",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        } catch (error) {
+          console.error("Delete error:", error);
           Swal.fire({
             position: "center",
-            icon: "success",
-            title: "Your food has been deleted",
+            icon: "error",
+            title: "Something went wrong while deleting.",
             showConfirmButton: false,
             timer: 1500,
           });
-
-          setFoods((prevFoods) => prevFoods.filter((food) => food._id !== id));
-        } else {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: data.message || "Deletion failed",
-            showConfirmButton: false,
-            timer: 1500,
-          });
         }
-      } catch (error) {
-        console.error("Delete error:", error);
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "Something went wrong while deleting.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
       }
-    }
-  });
-};
-
-
+    });
+  };
 
   return (
     <div>
+      <Helmet>
+        <title>Meal Bridge || Manage Food</title>
+      </Helmet>
       <h2 className=" text-3xl md:text-5xl my-20 text-center font-bold ">
         {" "}
         My Added Foods

@@ -7,6 +7,7 @@ import Review from "../../component/Review/Review";
 import { useContext } from "react";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import MealBridgeBanner from "../../component/Banner/MealBridgeBanner";
+import { Helmet } from "react-helmet";
 const Home = () => {
   const { user } = useContext(AuthContext);
   const [featuredFood, setFeaturedFood] = useState([]);
@@ -14,7 +15,7 @@ const Home = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("https://meal-bridge-server-jmroay962-taj-uddins-projects-665cefcc.vercel.app/featuredfood")
+      .get("https://meal-bridge-server-one.vercel.app/featuredfood")
       .then((res) => {
         setFeaturedFood(res.data);
         setLoading(false);
@@ -24,6 +25,9 @@ const Home = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Meal Bridge || Home</title>
+      </Helmet>
       <MealBridgeBanner></MealBridgeBanner>
       <FeaturedFoods
         loading={loading}

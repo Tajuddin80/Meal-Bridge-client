@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import MyFoodRequestSingleCard from "./MyFoodRequestSingleCard";
 import { myRequestedFoodsPromise } from "../../api/myRequestedFoodsPromise";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
+import { Helmet } from "react-helmet";
 
 const MyFoodRequest = () => {
   const [allFoods, setAllFoods] = useState([]);
@@ -29,6 +30,9 @@ const MyFoodRequest = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Meal Bridge || My Food Request</title>
+      </Helmet>
       <h3 className="text-center text-2xl my-10 md:text-3xl lg:text-4xl">
         My Requested Foods Section
       </h3>
