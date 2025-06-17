@@ -5,34 +5,19 @@ import { AuthContext } from "../../../Firebase/AuthContext/AuthContext";
 
 const ReviewSection = () => {
   const [reviews, setReviews] = useState([]);
-  const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      if (!user) {
-        console.log("User not authenticated. Cannot fetch reviews.");
-        return;
-      }
+ useEffect(() => {
+  const fetchReviews = async () => {
+    try {
+      const res = await axios.get("https://meal-bridge-server-one.vercel.app/allreviews");
+      setReviews(res.data);
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
+    }
+  };
 
-      try {
-        const token = await user.getIdToken();
-
-        const res = await axios.get(
-          "https://meal-bridge-server-one.vercel.app/allreviews",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setReviews(res.data);
-      } catch (error) {
-        console.error("Failed to fetch reviews:", error);
-      }
-    };
-
-    fetchReviews();
-  }, [user]);
+  fetchReviews();
+}, []);
 
   return (
     <div>
