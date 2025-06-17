@@ -10,7 +10,7 @@ const Review = () => {
   const [hovered, setHovered] = useState(0);
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (rating === 0 || message.trim() === "") {
@@ -24,40 +24,60 @@ const Review = () => {
       return;
     }
 
-    const userInfo = {
-      rating,
-      message,
-      email: user?.email || "anonymous",
-      photoURL: user?.photoURL || "", // fallback values
-      createdAt: new Date().toISOString(),
-    };
-
-    axios
-      .post("https://meal-bridge-server-one.vercel.app/addreviews", userInfo)
-      .then((res) => {
-        if (res.data.insertedId) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title:
-              "Thanks for your feedback! You can check your review at about us page",
-            showConfirmButton: false,
-            timer: 2500,
-          });
-          setRating(0);
-          setMessage("");
-        }
-      })
-      .catch((err) => {
-        console.error("Error submitting review:", err);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Something went wrong while submitting your review.",
-        });
+    if (!user) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "You must be signed in to submit a review.",
+        showConfirmButton: false,
+        timer: 1500,
       });
-  };
+      return;
+    }
 
+    try {
+      // Get Firebase ID token for auth
+      const token = await user.getIdToken();
+
+      const userInfo = {
+        rating,
+        message,
+        email: user.email || "anonymous",
+        photoURL: user.photoURL || "",
+        createdAt: new Date().toISOString(),
+      };
+
+      const res = await axios.post(
+        "https://meal-bridge-server-one.vercel.app/addreviews",
+        userInfo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.data.insertedId) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title:
+            "Thanks for your feedback! You can check your review at about us page",
+          showConfirmButton: false,
+          timer: 2500,
+        });
+        setRating(0);
+        setMessage("");
+      }
+    } catch (err) {
+      console.error("Error submitting review:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong while submitting your review.",
+      });
+    }
+  };
   return (
     <div className="flex flex-col w-[95vw] max-w-[95vw] px-6 py-8 shadow-sm rounded-xl bg-base-100 text-base-content mx-auto my-8">
       <form

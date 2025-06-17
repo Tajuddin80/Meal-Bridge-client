@@ -15,14 +15,13 @@ const Signin = () => {
     setPhoto,
     setUsername,
     setEmail,
-  } = use(AuthContext);
+  } = use(AuthContext); // Assuming your context hook is called useAuth
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
-
   const from = location.state?.from?.pathname || "/";
 
   const handleEmailSigninFunc = async (e) => {
@@ -31,50 +30,40 @@ const Signin = () => {
     const loginDetails = Object.fromEntries(formData.entries());
 
     try {
-      // Sign in with Firebase
-      const result = await handleEmailSignin(
-        loginDetails.email,
-        loginDetails.password
-      );
+      const result = await handleEmailSignin(loginDetails.email, loginDetails.password);
       const user = result.user;
 
       if (user) {
-        // Get all users from your DB
-        const res = await axios.get(
-          "https://meal-bridge-server-one.vercel.app/users"
-        );
+        // Get Firebase ID token for auth headers
+        const token = await user.getIdToken();
+
+        // Get all users from your DB with token for admin check (if needed)
+        const res = await axios.get("https://meal-bridge-server-one.vercel.app/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const usersList = res.data;
 
         // Check if email exists
         const emailExists = usersList.some((u) => u.email === user.email);
 
-        if (emailExists) {
-          // User exists → Welcome back
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: `Welcome back, ${user.displayName || "User"}!`,
-            showConfirmButton: false,
-            timer: 1500,
-          });
-        } else {
-          // New user → Insert into DB
+        if (!emailExists) {
+          // New user → Insert into DB with auth token
           const userInfo = {
-            name: user?.displayName || "Unknown",
-            photo: user?.photoURL || "",
-            email: user?.email,
+            name: user.displayName || "Unknown",
+            photo: user.photoURL || "",
+            email: user.email,
           };
 
-          const saveRes = await fetch(
-            "https://meal-bridge-server-one.vercel.app/adduser",
-            {
-              method: "POST",
-              headers: { "content-type": "application/json" },
-              body: JSON.stringify(userInfo),
-            }
-          );
-          const saveData = await saveRes.json();
+          const saveRes = await fetch("https://meal-bridge-server-one.vercel.app/adduser", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(userInfo),
+          });
 
+          const saveData = await saveRes.json();
           if (saveData.insertedId) {
             Swal.fire({
               position: "center",
@@ -86,16 +75,22 @@ const Signin = () => {
           } else {
             throw new Error("Failed to save user data");
           }
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: `Welcome back, ${user.displayName || "User"}!`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
 
-        // Update context & navigate
         setSuccess("Signin successful");
         setError("");
-
         setUser(user);
-        setUsername(user?.displayName);
-        setPhoto(user?.photoURL);
-        setEmail(user?.email);
+        setUsername(user.displayName);
+        setPhoto(user.photoURL);
+        setEmail(user.email);
 
         navigate(from, { replace: true });
       }
@@ -118,20 +113,48 @@ const Signin = () => {
       const result = await handleGoogleSignIn();
       const user = result.user;
 
-      const userInfo = {
-        name: user?.displayName,
-        photo: user?.photoURL,
-        email: user?.email,
-      };
+      if (!user) throw new Error("No user returned from Google SignIn");
 
-      // Fetch existing users
-      const usersRes = await axios.get(
-        "https://meal-bridge-server-one.vercel.app/users"
-      );
+      // Get Firebase ID token
+      const token = await user.getIdToken();
+
+      // Fetch existing users with token
+      const usersRes = await axios.get("https://meal-bridge-server-one.vercel.app/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const usersData = usersRes.data;
-      const emailExists = usersData.some((u) => u.email === user?.email);
+      const emailExists = usersData.some((u) => u.email === user.email);
 
-      if (emailExists) {
+      if (!emailExists) {
+        // Insert user if not exists
+        const userInfo = {
+          name: user.displayName,
+          photo: user.photoURL,
+          email: user.email,
+        };
+
+        const saveRes = await fetch("https://meal-bridge-server-one.vercel.app/adduser", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(userInfo),
+        });
+        const saveData = await saveRes.json();
+
+        if (saveData.insertedId) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Google Sign-in Successful",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          throw new Error("Failed to save user data");
+        }
+      } else {
         Swal.fire({
           position: "center",
           icon: "success",
@@ -139,33 +162,14 @@ const Signin = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        setUser(user);
-        navigate(from, { replace: true });
-        return;
       }
 
-      // If not exists, insert
-      const saveRes = await fetch(
-        "https://meal-bridge-server-one.vercel.app/adduser",
-        {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify(userInfo),
-        }
-      );
-      const saveData = await saveRes.json();
+      setUser(user);
+      setUsername(user.displayName);
+      setPhoto(user.photoURL);
+      setEmail(user.email);
 
-      if (saveData.insertedId) {
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Google Sign-in Successful",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        setUser(user);
-        navigate(from, { replace: true });
-      }
+      navigate(from, { replace: true });
     } catch (error) {
       setError(error.message);
       Swal.fire({
