@@ -67,7 +67,7 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
         // Step 1: Update food quantity
         await axios.patch(
           `https://meal-bridge-server-one.vercel.app/updateFoodAmount/${foodId}`,
-          { foodQuantity: updatedQuantity },
+          { foodQuantity: Number(updatedQuantity) }, // convert to number
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
