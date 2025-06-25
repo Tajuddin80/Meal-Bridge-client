@@ -20,7 +20,8 @@ MealBridge aims to:
 ## 🌐 **Live Demo**
 
 👉 [🚀 Visit MealBridge](https://meal-bridge-project.web.app/)  
-
+---
+<img src='https://github.com/Tajuddin80/Meal-Bridge-client/blob/main/meal-bridge-project.web.app_.png' >
 ---
 ## 🌐 **Client site github repo**
 
