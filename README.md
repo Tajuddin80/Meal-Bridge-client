@@ -1,129 +1,95 @@
+# 🍽️ MealBridge
 
-# 🍽️ **MealBridge**
-
-**MealBridge** is a modern web platform designed to connect food donors with people in need.  
-It empowers donors to share surplus food and enables receivers to request available items — fostering a community of care and reducing food waste.
+**MealBridge** is a web platform that connects food donors with people in need, helping reduce food waste by enabling donors to share surplus food and receivers to request and receive available items easily.
 
 ---
 
-## 🌟 **Purpose**
-The purpose of MealBridge is to reduce food waste by bridging the gap between donors and receivers through a secure, user-friendly web application.
+## 🌟 Project Overview
 
-MealBridge aims to:
-- 🌱 **Reduce food waste** by redistributing surplus food.
-- 🫂 **Support communities** by making food donations more accessible.
-- 🔒 **Ensure security** with robust authentication and authorization.
-- ⚡ **Provide a seamless experience** through an interactive, responsive app.
+MealBridge fosters a caring community by redistributing excess food efficiently and securely. It offers a smooth, user-friendly experience powered by modern web technologies.
 
 ---
 
-## 🌐 **Live Demo**
+## 📸 Screenshot
 
-👉 [🚀 Visit MealBridge](https://meal-bridge-project.web.app/)  
----
-<img src='https://github.com/Tajuddin80/Meal-Bridge-client/blob/main/meal-bridge-project.web.app_.png' >
----
-## 🌐 **Client site github repo**
-
-👉 🚀 https://github.com/Programming-Hero-Web-Course4/b11a11-client-side-Tajuddin-green
-
----
-## 🌐 **Server site github repo**
-
-👉 🚀 https://github.com/Programming-Hero-Web-Course4/b11a11-server-side-Tajuddin-green
-
-
-## 💡 **Key Features**
-
-✨ **Secure Authentication**  
-- Firebase Authentication  
-- JWT token validation  
-- Token-based API protection  
-
-✨ **Role-Based Access Control**  
-- Donor & Receiver roles  
-- Restricted operations based on role  
-
-✨ **Powerful CRUD Operations**  
-- Donors: Add, edit, delete food items  
-- Receivers: Request and track food  
-
-✨ **Modern UI/UX**  
-- Built with **Tailwind CSS** + **DaisyUI**  
-- Smooth **Framer Motion** animations  
-- Engaging **Lottie** & **Swiper** integrations  
-
-✨ **Real-Time & Reliable Data**  
-- **React Query** for caching + background updates  
-- **Axios** for API requests  
-
-✨ **User-Friendly Alerts & Modals**  
-- SweetAlert2 modals for confirmations, errors, and notifications  
-
-✨ **Mobile-First & Responsive**  
-- Fully optimized for phones, tablets, and desktops  
+<img src="https://github.com/Tajuddin80/Meal-Bridge-client/blob/main/meal-bridge-project.web.app_.png" alt="MealBridge Screenshot" />
 
 ---
 
-## 🔐 **Security Highlights**
+## 🌐 Live Demo
 
-✅ Firebase token required for all protected routes  
-✅ API verifies that **only the food owner** can modify or delete their items  
-✅ No unauthorized data manipulation possible  
+👉 [🚀 Visit MealBridge](https://meal-bridge-project.web.app/)
 
 ---
 
-## 📦 **NPM Packages Used**
+## 🌐 GitHub Repositories
 
-| Package | Purpose |
-|----------|---------|
-| `react`, `react-dom` | Core React app |
-| `react-router` | Routing and navigation |
-| `@tanstack/react-query` | Data fetching, caching |
-| `axios` | API requests |
-| `firebase` | Auth + backend services |
-| `sweetalert2` | Alert modals |
-| `framer-motion` | Animations |
-| `lottie-react` | Lottie animation support |
-| `swiper` | Slider/Carousel |
-| `react-icons` | Icon set |
-| `react-simple-typewriter` | Typewriter effect |
-| `react-tooltip` | Tooltips |
-| `tailwindcss`, `daisyui` | Styling and components |
-
-### 🛠 **Dev Dependencies**
-- `vite` — Fast dev server & bundler  
-- `@vitejs/plugin-react` — React + Vite integration  
-- `eslint`, `@eslint/js`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh` — Code linting  
-- `@types/react`, `@types/react-dom` — TypeScript type support  
+- Client: [https://github.com/Tajuddin80/Meal-Bridge-client](https://github.com/Tajuddin80/Meal-Bridge-client)  
+- Server: [https://github.com/Tajuddin80/Meal-Bridge-server](https://github.com/Tajuddin80/Meal-Bridge-server)
 
 ---
 
-## 🏗️ **Tech Stack**
+## 🛠 Tech Stack
 
-- **Frontend:** React + Vite + Tailwind + DaisyUI  
-- **Backend:** Node.js + Express + MongoDB (secured with Firebase JWT verification)  
+- **Frontend:** React, Vite, Tailwind CSS, DaisyUI  
+- **Backend:** Node.js, Express, MongoDB  
+- **Authentication:** Firebase Authentication with JWT verification  
 - **Hosting:** Firebase Hosting  
 
 ---
 
-## 📌 **Folder Structure Overview**
-\`\`\`
-/src
- ┣ /components        # Reusable components
- ┣ /pages             # Main app pages
- ┣ /Firebase           # Firebase auth setup
- ┣ /api               # API request helpers
- ┣ /assets            # Images & static files
- ┣ App.jsx            # Main app component
- ┣ main.jsx           # Entry point
-\`\`\`
+## ✨ Key Features
+
+- Secure user authentication and role-based access control (Donor & Receiver)  
+- Donors can add, edit, and delete food items  
+- Receivers can request and track food donations  
+- Responsive design optimized for all devices  
+- Smooth animations with Framer Motion, plus Lottie & Swiper integrations  
+- Real-time data fetching and caching with React Query and Axios  
+- User-friendly alerts and modals using SweetAlert2  
 
 ---
 
+## 📦 Dependencies
 
+| Package                | Purpose                      |
+|------------------------|------------------------------|
+| `react`, `react-dom`   | Core React framework          |
+| `react-router`         | Client-side routing           |
+| `@tanstack/react-query`| Data fetching and caching     |
+| `axios`                | API calls                    |
+| `firebase`             | Authentication & backend     |
+| `sweetalert2`          | Alerts & modals              |
+| `framer-motion`        | Animations                  |
+| `lottie-react`         | Lottie animations           |
+| `swiper`               | Carousel/slider              |
+| `react-icons`          | Icons                       |
+| `react-simple-typewriter` | Typewriter effect          |
+| `react-tooltip`        | Tooltips                    |
+| `tailwindcss`, `daisyui` | Styling and UI components  |
 
-## 🛡️ **Contribution & License**
+**Dev Dependencies:**  
+`vite`, `@vitejs/plugin-react`, `eslint`, `@eslint/js`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `@types/react`, `@types/react-dom`
 
-Contributions welcome! Open an issue or submit a PR.  
-📄 **License:** MIT  
+---
+
+## 🚀 How to Run Locally
+
+1. Clone the client repo and install dependencies:
+   ```bash
+   git clone https://github.com/Tajuddin80/Meal-Bridge-client.git
+   cd Meal-Bridge-client
+   npm install
+2.Create a `.env` file in the root and add Firebase config and API URLs.
+
+Start the client dev server:
+
+```bash
+npm run dev
+
+3. 🛡️ Security Highlights
+Firebase token required for all protected routes
+
+Only owners can modify/delete their food items
+
+JWT verification protects API endpoints
