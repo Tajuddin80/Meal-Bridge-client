@@ -2,11 +2,10 @@ import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-
-import SignleFood from "./SignleFood";
-import FoodCard from "../../component/FeaturedFoods/FoodCard";
+import { Link } from "react-router";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import { Helmet } from "react-helmet";
+import { Grid, List } from "lucide-react";
 
 const fetchFoods = async () => {
   const { data } = await axios.get(
@@ -28,27 +27,12 @@ const AvailableFood = () => {
     }
   };
 
-  const [selectedCategory, setSelectedCategory] = useState(() =>
-    getSavedState("availableFood_category", "all")
-  );
-  const [sortOrder, setSortOrder] = useState(() =>
-    getSavedState("availableFood_sortOrder", "none")
-  );
   const [viewType, setViewType] = useState(() =>
-    getSavedState("availableFood_viewType", "table")
+    getSavedState("availableFood_viewType", "card")
   );
   const [searchText, setSearchText] = useState("");
-
-  useEffect(() => {
-    localStorage.setItem(
-      "availableFood_category",
-      JSON.stringify(selectedCategory)
-    );
-  }, [selectedCategory]);
-
-  useEffect(() => {
-    localStorage.setItem("availableFood_sortOrder", JSON.stringify(sortOrder));
-  }, [sortOrder]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortOrder, setSortOrder] = useState("none");
 
   useEffect(() => {
     localStorage.setItem("availableFood_viewType", JSON.stringify(viewType));
@@ -86,7 +70,6 @@ const AvailableFood = () => {
       });
     },
     onError: (err) => {
-      console.error("Add food failed:", err);
       Swal.fire({
         icon: "error",
         title: "Failed to add sample food",
@@ -153,12 +136,14 @@ const AvailableFood = () => {
       </div>
     );
   }
+
   return (
-    <div className="overflow-x-auto">
+    <div>
       <Helmet>
         <title>Meal Bridge || Available Food</title>
       </Helmet>
-      <div className="w-[95vw] mx-auto mt-10 mb-4 flex flex-wrap justify-center gap-4">
+
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-4 items-center my-6 px-4">
         <input
           type="text"
           placeholder="Search by food name..."
@@ -166,7 +151,6 @@ const AvailableFood = () => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
-
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
@@ -179,7 +163,6 @@ const AvailableFood = () => {
           <option value="Street-Food">Street Food</option>
           <option value="Appetizer">Appetizer</option>
         </select>
-
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
@@ -190,14 +173,29 @@ const AvailableFood = () => {
           <option value="desc">Newest First</option>
         </select>
 
-        <select
-          value={viewType}
-          onChange={(e) => setViewType(e.target.value)}
-          className="select select-bordered"
+        <button
+          onClick={() =>
+            setViewType((prev) => {
+              const newType = prev === "card" ? "table" : "card";
+              localStorage.setItem(
+                "availableFood_viewType",
+                JSON.stringify(newType)
+              );
+              return newType;
+            })
+          }
+          className="btn btn-sm btn-outline flex gap-1"
         >
-          <option value="table">Table View</option>
-          <option value="card">Card View</option>
-        </select>
+          {viewType === "card" ? (
+            <>
+              <List size={16} /> Table View
+            </>
+          ) : (
+            <>
+              <Grid size={16} /> Card View
+            </>
+          )}
+        </button>
 
         <button
           className="btn btn-success"
@@ -216,30 +214,75 @@ const AvailableFood = () => {
         <div className="text-center py-6">
           No food found for selected filters.
         </div>
-      ) : viewType === "table" ? (
-        <table className="w-[95vw] my-4 mx-auto bg-base-50 border border-base-300 rounded-lg shadow-sm text-base-content">
-          <thead className="bg-primary text-primary-content">
-            <tr>
-              <th className="py-3 px-4 text-left">Image</th>
-              <th className="py-3 px-4 text-left">Name</th>
-              <th className="py-3 px-4 text-left">Category</th>
-              <th className="py-3 px-4 text-left">Quantity</th>
-              <th className="py-3 px-4 text-left">Expiration Date</th>
-              <th className="py-3 px-4 text-left">Pickup Location</th>
-              <th className="py-3 px-4 text-left">View Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredFoods.map((food) => (
-              <SignleFood key={food._id} food={food} />
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <div className="grid gap-8 w-[95vw] mx-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-8">
+      ) : viewType === "card" ? (
+        <div className=" grid gap-4 w-[95vw] mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {filteredFoods.map((food) => (
-            <FoodCard key={food._id} food={food} loading={false} />
+            <div key={food._id} className="card bg-base-200 shadow-md ">
+              <figure>
+                <img
+                  src={food.foodImage}
+                  alt={food.foodName}
+                  className="h-48 w-full object-cover"
+                />
+              </figure>
+              <div className="card-body text-lg">
+                <h3 className="card-title">{food.foodName}</h3>
+                <p>Category: {food.category}</p>
+                <p>Quantity: {food.foodQuantity}</p>
+                <p>Expires: {food.expiredDate}</p>
+                <p>Pickup: {food.pickupLocation}</p>
+                <Link
+                  to={`/allFoods/${food._id}`}
+                  className="btn btn-md btn-outline btn-primary mt-3"
+                >
+                  View Details
+                </Link>
+              </div>
+            </div>
           ))}
+        </div>
+      ) : (
+        <div className="overflow-x-auto w-[95vw] mx-auto">
+          <table className="table bg-base-200 shadow rounded text-lg">
+            <thead className="bg-primary  text-primary-content">
+              <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Expiration</th>
+                <th>Pickup</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredFoods.map((food) => (
+                <tr key={food._id} className="hover">
+                  <td>
+                    <img
+                      src={food.foodImage}
+                      alt={food.foodName}
+                      className="h-20 w-20 rounded object-cover"
+                    />
+                  </td>
+
+                  <td>{food.foodName}</td>
+                  <td>{food.category}</td>
+                  <td>{food.foodQuantity}</td>
+                  <td>{food.expiredDate}</td>
+                  <td>{food.pickupLocation}</td>
+                  <td>
+                    <Link
+                      to={`/allFoods/${food._id}`}
+                      className="btn btn-md btn-outline btn-info"
+                    >
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

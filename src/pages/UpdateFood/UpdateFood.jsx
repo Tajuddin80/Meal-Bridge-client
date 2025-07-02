@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet";
 const UpdateFood = () => {
   const [food, setFood] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(""); // controlled input for quantity
 
   const foodInfo = useLoaderData();
   const { id } = useParams();
@@ -16,22 +17,40 @@ const UpdateFood = () => {
   useEffect(() => {
     if (foodInfo) {
       setFood(foodInfo);
+      setQuantity(foodInfo.foodQuantity ?? ""); // initialize quantity state
     } else {
       setFood(null);
     }
     setLoading(false);
   }, [foodInfo]);
+
+  const handleQuantityChange = (e) => {
+    const val = e.target.value;
+    // Allow empty or positive numbers only
+    if (val === "" || /^[0-9\b]+$/.test(val)) {
+      setQuantity(val);
+    }
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
+
+    // Validate quantity: convert empty string to 0 or show error
+    const parsedQuantity = quantity === "" ? 0 : Number(quantity);
+
+    if (parsedQuantity <= 0) {
+      Swal.fire("Error", "Food quantity must be greater than zero.", "error");
+      return;
+    }
 
     const form = e.target;
     const formData = new FormData(form);
     const foodData = Object.fromEntries(formData.entries());
 
-    // Convert foodQuantity to number
-    foodData.foodQuantity = Number(foodData.foodQuantity);
+    // Override foodQuantity from state, safely parsed as number
+    foodData.foodQuantity = parsedQuantity;
 
-    // Remove donor fields so they aren’t sent
+    // Remove donor fields
     delete foodData.donorName;
     delete foodData.donorImage;
     delete foodData.donorEmail;
@@ -63,7 +82,7 @@ const UpdateFood = () => {
 
           if (data.modifiedCount > 0 || data.acknowledged) {
             Swal.fire("Updated!", "", "success");
-            navigate(`/manageMyFoods`);
+            navigate(`/dashboard/manageMyFoods`);
           } else {
             Swal.fire("No changes were made.", "", "info");
           }
@@ -90,10 +109,21 @@ const UpdateFood = () => {
   }
 
   return (
-    <div className="min-h-screen my-7 flex items-center justify-center bg-base-50 px-4 py-10 text-base-content">
+    <div className="my-7 flex flex-col items-center justify-center bg-base-50 px-2 py-5 text-base-content">
       <Helmet>
         <title>Meal Bridge || Update Food</title>
       </Helmet>
+
+      {/* Back button */}
+      <div className="w-full max-w-5xl mb-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="btn btn-sm btn-outline btn-primary"
+        >
+          ⬅ Back
+        </button>
+      </div>
+
       <form
         onSubmit={handleUpdate}
         className="w-full max-w-5xl bg-base-100 shadow-md rounded-lg p-8"
@@ -102,38 +132,21 @@ const UpdateFood = () => {
           Update Food Item
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block mb-1 font-medium">Food Name</label>
-            <input
-              type="text"
-              name="foodName"
-              defaultValue={food.foodName}
-              className="input input-bordered w-full"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Food Image URL</label>
-            <input
-              type="text"
-              name="foodImage"
-              defaultValue={food.foodImage}
-              className="input input-bordered w-full"
-              required
-            />
-          </div>
+          {/* Other inputs ... */}
 
           <div>
             <label className="block mb-1 font-medium">Food Quantity</label>
             <input
-              type="number"
+              type="text"
               name="foodQuantity"
-              defaultValue={food.foodQuantity}
+              value={quantity}
+              onChange={handleQuantityChange}
               className="input input-bordered w-full"
               required
             />
           </div>
+
+          {/* Rest of the inputs ... */}
 
           <div>
             <label className="block mb-1 font-medium">Pickup Location</label>

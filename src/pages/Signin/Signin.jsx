@@ -227,7 +227,7 @@ const Signin = () => {
               name="email"
               id="email"
               required
-              placeholder="cmtajuddinchowdhury@gmail.com"
+              placeholder="example@gmail.com"
               className="w-full px-3 py-2 border rounded-md border-base-content/20 bg-base-100 text-base-content"
             />
           </div>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { use, useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
@@ -7,7 +7,7 @@ import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 const MyFoodRequestSingleCard = ({ food, onRemove }) => {
   const [status, setStatus] = useState(food.status || "requested");
   const [disabled, setDisabled] = useState(food.status === "Received");
-  const { user } = use(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const handleChange = async (e) => {
     const newStatus = e.target.value;
@@ -33,13 +33,11 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
         const token = await user.getIdToken();
         const foodId = food.requestedFood.id;
 
-        // Fetch food data and current requests
+        // Update quantity and delete request
         const [foodRes, requestsRes] = await Promise.all([
           axios.get(
             `https://meal-bridge-server-one.vercel.app/allFoods/${foodId}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+            { headers: { Authorization: `Bearer ${token}` } }
           ),
           axios.get(`https://meal-bridge-server-one.vercel.app/requestedFood`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -64,20 +62,17 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
           return;
         }
 
-        // Step 1: Update food quantity
         await axios.patch(
           `https://meal-bridge-server-one.vercel.app/updateFoodAmount/${foodId}`,
-          { foodQuantity: Number(updatedQuantity) }, // convert to number
+          { foodQuantity: Number(updatedQuantity) },
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        // Step 2: Delete the request
         await axios.delete(
           `https://meal-bridge-server-one.vercel.app/requestedFood/${food._id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        // Step 3: Update local state
         setStatus("Received");
         setDisabled(true);
         onRemove(food._id);
@@ -93,38 +88,58 @@ const MyFoodRequestSingleCard = ({ food, onRemove }) => {
   };
 
   return (
-    <tr className="hover:bg-base-200 transition-colors">
-      <td className="py-2 px-4 w-20 text-center">
-        <img
-          src={food.requestedFood.image}
-          alt={food.requestedFood.name}
-          className="h-12 w-12 object-cover rounded mx-auto"
-        />
-      </td>
-      <td className="py-2 px-4 text-left">{food.requestedFood.name}</td>
-      <td className="py-2 px-4 text-center">{food.requestedQuantity}</td>
-      <td className="py-2 px-4 text-center">{food.expiredDate}</td>
-      <td className="py-2 px-4 text-left">{food.pickupLocation}</td>
-      <td className="py-2 px-4 text-center">
-        <Link
-          to={`/allFoods/${food.requestedFood.id}`}
-          className="text-info hover:underline"
-        >
-          View Details
-        </Link>
-      </td>
-      <td className="py-2 px-4 w-36 text-center">
-        <select
-          className="select select-sm select-bordered w-full"
-          value={status}
-          disabled={disabled}
-          onChange={handleChange}
-        >
-          <option value="requested">requested</option>
-          <option value="Received">Received</option>
-        </select>
-      </td>
-    </tr>
+ <div
+  className="card bg-base-100 shadow-xl rounded-2xl overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl"
+>
+  <figure className="relative">
+    <img
+      src={food.requestedFood.image}
+      alt={food.requestedFood.name}
+      className="rounded-none h-40 w-full object-cover transition duration-500 hover:brightness-110"
+    />
+    <span className="absolute top-2 left-2 bg-primary text-primary-content text-xs font-semibold px-2 py-1 rounded animate-pulse">
+      {food.requestedFood.category || "Food"}
+    </span>
+  </figure>
+
+  <div className="card-body text-left p-4 space-y-2 text-lg">
+    <h2 className="card-title font-bold transition-colors duration-300 hover:text-primary">
+      {food.requestedFood.name}
+    </h2>
+    <p className="text-base-content/80">
+      Quantity Requested: <span className="font-semibold">{food.requestedQuantity}</span>
+    </p>
+    <p className="text-base-content/80">
+      Expires: <span className="font-semibold">{food.expiredDate}</span>
+    </p>
+    <p className="text-base-content/80">
+      Pickup: <span className="font-semibold">{food.pickupLocation}</span>
+    </p>
+
+    <div className="flex flex-wrap gap-2 mt-3">
+      <Link
+        to={`/allFoods/${food.requestedFood.id}`}
+        className="btn btn-sm btn-outline btn-primary flex items-center gap-1 transition-transform duration-300 hover:scale-105"
+      >
+        View Details
+      </Link>
+    </div>
+
+    <div className="mt-2">
+      <select
+        className="select select-sm select-bordered w-full transition duration-300 focus:outline-none focus:ring-2 focus:ring-primary"
+        value={status}
+        disabled={disabled}
+        onChange={handleChange}
+      >
+        <option value="requested">Requested</option>
+        <option value="Received">Received</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+
   );
 };
 

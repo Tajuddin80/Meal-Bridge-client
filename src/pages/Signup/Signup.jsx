@@ -247,7 +247,7 @@ const Signup = () => {
               name="name"
               id="name"
               required
-              placeholder="e.g., Taj Uddin"
+              placeholder="e.g., Ibrahim"
               className="w-full px-3 py-2 border rounded-md border-base-300 bg-base-100 text-base-content"
             />
           </div>

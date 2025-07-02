@@ -82,7 +82,7 @@ const AddFood = () => {
   };
 
   return (
-    <div className="min-h-screen my-7 flex items-center justify-center bg-base-50 px-4 py-10 text-base-content">
+    <div className=" my-7 flex items-center justify-center bg-base-50 px-2 py-5 text-base-content">
       <Helmet>
         <title>Meal Bridge || Add Food</title>
       </Helmet>
