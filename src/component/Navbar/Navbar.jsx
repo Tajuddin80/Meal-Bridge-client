@@ -58,6 +58,22 @@ const Navbar = () => {
       </li>
       <li className="text-lg whitespace-nowrap">
         <NavLink
+          to="/support"
+          className={({ isActive }) => (isActive ? "underline font-bold" : "")}
+        >
+          Support
+        </NavLink>
+      </li>
+      <li className="text-lg whitespace-nowrap">
+        <NavLink
+          to="/contact"
+          className={({ isActive }) => (isActive ? "underline font-bold" : "")}
+        >
+         Contact Us
+        </NavLink>
+      </li>
+      <li className="text-lg whitespace-nowrap">
+        <NavLink
           to="/aboutUs"
           className={({ isActive }) => (isActive ? "underline font-bold" : "")}
         >

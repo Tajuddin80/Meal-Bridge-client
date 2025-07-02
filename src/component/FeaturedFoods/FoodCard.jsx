@@ -16,17 +16,17 @@ const FoodCard = ({ food, loading }) => {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.98 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="card bg-base-100 shadow-xl rounded-xl border border-base-300 hover:shadow-2xl transition-shadow"
+          className="card bg-base-100 shadow-xl rounded-2xl border border-base-300 hover:shadow-2xl transition-shadow"
         >
-          <figure className="px-10 pt-10">
+          <figure className="px-6 pt-6">
             <img
               src={food.foodImage}
               alt={food.foodName}
               className="rounded-xl object-cover w-full max-h-48"
             />
           </figure>
-          <div className="card-body items-center text-center text-base-content">
-            <h2 className="card-title text-2xl font-extrabold">
+          <div className="card-body text-left text-base-content space-y-2">
+            <h2 className="text-xl md:text-3xl font-extrabold text-primary">
               {food.foodName}
             </h2>
             <p className="text-base font-semibold">
@@ -42,8 +42,8 @@ const FoodCard = ({ food, loading }) => {
               Expires: <span className="font-normal">{food.expiredDate}</span>
             </p>
 
-            <div className="w-full mt-4">
-              <Link to={`/allfoods/${food._id}`} className="w-full">
+            <div className="mt-4">
+              <Link to={`/allfoods/${food._id}`}>
                 <button className="btn btn-primary w-full">View Details</button>
               </Link>
             </div>

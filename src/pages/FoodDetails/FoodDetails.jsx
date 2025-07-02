@@ -147,7 +147,7 @@ const FoodDetails = () => {
           showConfirmButton: false,
           timer: 3000,
         });
-        navigate("/myFoodRequest");
+        navigate("/dashboard/myFoodRequest");
       }
     } catch (err) {
       console.error("Request submission failed:", err);

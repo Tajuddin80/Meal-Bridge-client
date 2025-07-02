@@ -6,6 +6,7 @@ import { Link } from "react-router";
 import { AuthContext } from "../../Firebase/AuthContext/AuthContext";
 import { Helmet } from "react-helmet";
 import { Grid, List } from "lucide-react";
+import { motion } from "framer-motion";
 
 const fetchFoods = async () => {
   const { data } = await axios.get(
@@ -215,32 +216,54 @@ const AvailableFood = () => {
           No food found for selected filters.
         </div>
       ) : viewType === "card" ? (
-        <div className=" grid gap-4 w-[95vw] mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredFoods.map((food) => (
-            <div key={food._id} className="card bg-base-200 shadow-md ">
-              <figure>
-                <img
-                  src={food.foodImage}
-                  alt={food.foodName}
-                  className="h-48 w-full object-cover"
-                />
-              </figure>
-              <div className="card-body text-lg">
-                <h3 className="card-title">{food.foodName}</h3>
-                <p>Category: {food.category}</p>
-                <p>Quantity: {food.foodQuantity}</p>
-                <p>Expires: {food.expiredDate}</p>
-                <p>Pickup: {food.pickupLocation}</p>
-                <Link
-                  to={`/allFoods/${food._id}`}
-                  className="btn btn-md btn-outline btn-primary mt-3"
-                >
-                  View Details
-                </Link>
-              </div>
+          <div className="grid gap-4 w-[95vw] mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {filteredFoods.map((food) => (
+        <motion.div
+          key={food._id}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="card bg-base-100 border border-base-300 shadow-xl rounded-2xl overflow-hidden hover:shadow-2xl transition-shadow"
+        >
+          <figure className="px-6 pt-6">
+            <img
+              src={food.foodImage}
+              alt={food.foodName}
+              className="rounded-xl object-cover w-full max-h-48"
+            />
+          </figure>
+
+          <div className="card-body text-left text-base-content space-y-2">
+            <h3 className="text-xl md:text-3xl font-extrabold text-primary">
+              {food.foodName}
+            </h3>
+            <p className="text-base font-semibold">
+              Category: <span className="font-normal">{food.category}</span>
+            </p>
+            <p className="text-sm font-medium">
+              Quantity: <span className="font-normal">{food.foodQuantity}</span>
+            </p>
+            <p className="text-sm font-medium">
+              Pickup: <span className="font-normal">{food.pickupLocation}</span>
+            </p>
+            <p className="text-sm font-semibold text-error">
+              Expires: <span className="font-normal">{food.expiredDate}</span>
+            </p>
+
+            <div className="mt-4">
+              <Link
+                to={`/allFoods/${food._id}`}
+                className="btn btn-md btn-outline btn-primary w-full"
+              >
+                View Details
+              </Link>
             </div>
-          ))}
-        </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
       ) : (
         <div className="overflow-x-auto w-[95vw] mx-auto">
           <table className="table bg-base-200 shadow rounded text-lg">

@@ -15,6 +15,8 @@ import UpdateFood from "../pages/UpdateFood/UpdateFood";
 import MyFoodRequest from "../pages/MyFoodRequest/MyFoodRequest";
 import DashboardLayout from "../AllLayouts/DashboardLayout/DashboardLayout";
 import Overview from "../Overview/Overview";
+import Contact from "../pages/Contact/Contact";
+import Support from "../pages/Support/Support";
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +74,17 @@ export const router = createBrowserRouter([
         ),
         errorElement: <Error404 />,
       },
+        {
+        path: "support",
+        element: <Support></Support>,
+        errorElement: <Error404 />,
+      },
+      {
+        path: "contact",
+        element: <Contact></Contact>,
+        errorElement: <Error404 />,
+      },
+  
     ],
   },
  {
@@ -84,6 +97,22 @@ export const router = createBrowserRouter([
   errorElement: <Error404 />,
   children: [
     { index: true, element: <Overview /> },
+         {
+        path: "updateFood/:id",
+        element: (
+         
+            <UpdateFood />
+       
+        ),
+        loader: async ({ params }) => {
+          const res = await fetch(
+            `https://meal-bridge-server-one.vercel.app/allFoods/${params.id}`
+          );
+          if (!res.ok) throw new Response("Not Found", { status: 404 });
+          return res.json();
+        },
+        errorElement: <Error404 />,
+      },
     { path: "addFood", element: <AddFood />, errorElement: <Error404 /> },
     { path: "manageMyFoods", element: <ManageMyFoods />, errorElement: <Error404 /> },
     { path: "myFoodRequest", element: <MyFoodRequest />, errorElement: <Error404 /> },

@@ -68,7 +68,7 @@ const AddFood = () => {
             timer: 1500,
           });
           form.reset();
-          navigate(`/manageMyFoods`);
+          navigate(`/dashboard/manageMyFoods`);
         }
       })
       .catch((err) => {

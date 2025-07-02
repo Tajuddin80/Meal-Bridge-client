@@ -62,7 +62,7 @@ const Review = () => {
           position: "center",
           icon: "success",
           title:
-            "Thanks for your feedback! You can check your review at about us page",
+            "Thanks for your feedback! You can check your review at support page",
           showConfirmButton: false,
           timer: 2500,
         });

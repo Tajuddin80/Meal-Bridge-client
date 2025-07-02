@@ -43,7 +43,7 @@ const MealBridgeBanner = () => {
           <Link to="/availableFoods" className="btn btn-primary">
             Explore Foods
           </Link>
-          <Link to="/addFood" className="btn btn-secondary">
+          <Link to="/dashboard/addFood" className="btn btn-secondary">
             Share Food
           </Link>
         </motion.div>

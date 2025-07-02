@@ -43,7 +43,7 @@ const About = () => {
         </div>
       </div>
       <div>
-        <ReviewSection></ReviewSection>
+        {/* <ReviewSection></ReviewSection> */}
       </div>
     </>
   );
