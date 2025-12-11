@@ -1,4 +1,6 @@
 import React from "react";
+
+
 import { motion } from "framer-motion";
 import { Link } from "react-router";
 
@@ -7,7 +9,7 @@ const MealBridgeBanner = () => {
     <div className="relative w-full h-[60vh] md:h-[85vh] overflow-hidden rounded-lg shadow-lg mb-15">
       {/* Background Image */}
       <img
-        src="/public/asset/mealBridge-min.jpg"
+        src="/asset/mealBridge-min.jpg"
         alt="MealBridge Community Event"
         className="absolute w-full h-full object-cover"
       />
