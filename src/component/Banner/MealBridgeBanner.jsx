@@ -7,7 +7,7 @@ const MealBridgeBanner = () => {
     <div className="relative w-full h-[60vh] md:h-[85vh] overflow-hidden rounded-lg shadow-lg mb-15">
       {/* Background Image */}
       <img
-        src="https://i.ibb.co/v4D29MV6/top-view-tasty-cooked-potatoes-delicious-meal-with-greens-seasonings-dark-surface-potato-dinner-dish.jpg"
+        src="/public/asset/mealBridge-min.jpg"
         alt="MealBridge Community Event"
         className="absolute w-full h-full object-cover"
       />
